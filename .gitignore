@@ -1,0 +1,13 @@
+.DS_Store
+Desktop.ini
+Thumbs.db
+.vscode/
+*.swp
+*.swo
+*~
+
+# Local and secret material
+*.local
+*.secret
+secrets/
+private/
