@@ -1,0 +1,13 @@
+// Minimal Niri bootstrap for the Arch Linux post-install procedure.
+// The full daily-driver configuration will replace this reviewed checkpoint.
+
+// Graphical authentication agent for polkit requests.
+spawn-at-startup "/usr/lib/mate-polkit/polkit-mate-authentication-agent-1"
+
+binds {
+    // Mod is the Super key when Niri runs directly from a TTY.
+    Mod+Return hotkey-overlay-title="Open Kitty" { spawn "kitty"; }
+
+    // Niri shows a confirmation dialog before ending the session.
+    Mod+Shift+E hotkey-overlay-title="Exit Niri" { quit; }
+}

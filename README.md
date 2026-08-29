@@ -5,8 +5,9 @@ Arch Linux post-install repository.
 
 ## Project status
 
-Architecture stage. The desktop component stack and deployment method have not
-yet been selected, so this repository does not contain real dotfiles yet.
+Bootstrap stage. The repository now contains one deliberately small GNU Stow
+package for proving that Niri can start, open Kitty, run a graphical polkit
+agent, and exit safely. It is not the final daily-driver configuration.
 
 ## Scope
 
@@ -23,8 +24,9 @@ This repository will own user-level configuration for components such as:
 - Theme, GTK, cursor, and icon settings.
 - Selected command-line and graphical applications.
 
-The exact list will follow the component decisions made in
-`arch-linux-post-install`.
+The exact list follows the component decisions made in
+`arch-linux-post-install`. Kitty is the canonical terminal; the remaining
+desktop roles are added only after they have been reviewed.
 
 ## Boundary
 
@@ -61,6 +63,51 @@ example files may use clearly fake placeholders.
 ## Planned structure
 
 See the [dotfiles design notes](docs/README.md).
+
+## Current bootstrap
+
+The first Stow package owns one file:
+
+```text
+niri/.config/niri/config.kdl
+```
+
+It provides only:
+
+- the MATE polkit authentication-agent autostart;
+- `Super+Enter` to open Kitty;
+- `Super+Shift+E` to exit Niri through its confirmation dialog.
+
+It deliberately does not configure outputs, scaling, keyboard layout, themes,
+bars, launchers, notifications, wallpaper, locking, idle handling, or
+automatic login.
+
+Package installation and the complete deployment procedure are documented in
+[chapter 05 of Arch Linux Post-install](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/05-minimal-graphical-bootstrap.md).
+
+## Deploy with GNU Stow
+
+From the repository root, preview the links:
+
+```bash
+stow --simulate --verbose --no-folding --target="$HOME" niri
+```
+
+If the preview reports no conflict, deploy them:
+
+```bash
+stow --verbose --no-folding --target="$HOME" niri
+niri validate
+```
+
+Do not overwrite an existing `~/.config/niri/config.kdl`. Review and back up an
+existing target before deploying this package.
+
+Remove only the links owned by this package with:
+
+```bash
+stow --delete --verbose --target="$HOME" niri
+```
 
 ## Related repositories
 
