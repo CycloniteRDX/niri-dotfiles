@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Udiskie
+Comment=Automatically mount removable media
+TryExec=udiskie
+Exec=udiskie --no-notify
+Terminal=false

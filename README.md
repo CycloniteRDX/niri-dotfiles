@@ -5,9 +5,10 @@ Arch Linux post-install repository.
 
 ## Project status
 
-Bootstrap stage. The repository now contains one deliberately small GNU Stow
-package for proving that Niri can start, open Kitty, run a graphical polkit
-agent, and exit safely. It is not the final daily-driver configuration.
+Bootstrap stage. The repository contains a small Niri package for proving that
+the compositor can start and recover, plus one XDG autostart entry for the
+reviewed removable-media service. It is not the final daily-driver
+configuration.
 
 ## Scope
 
@@ -66,17 +67,20 @@ See the [dotfiles design notes](docs/README.md).
 
 ## Current bootstrap
 
-The first Stow package owns one file:
+The current Stow packages own two files:
 
 ```text
 niri/.config/niri/config.kdl
+autostart/.config/autostart/udiskie.desktop
 ```
 
-It provides only:
+They provide only:
 
 - the MATE polkit authentication-agent autostart;
 - `Super+Enter` to open Kitty;
 - `Super+Shift+E` to exit Niri through its confirmation dialog.
+- automatic removable-media mounting through udiskie, without notifications or
+  a tray icon at this stage.
 
 It deliberately does not configure outputs, scaling, keyboard layout, themes,
 bars, launchers, notifications, wallpaper, locking, idle handling, or
@@ -84,6 +88,8 @@ automatic login.
 
 Package installation and the complete deployment procedure are documented in
 [chapter 05 of Arch Linux Post-install](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/05-minimal-graphical-bootstrap.md).
+The removable-media service is added in
+[chapter 07](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/07-core-workstation-services.md).
 
 ## Deploy with GNU Stow
 
@@ -91,12 +97,14 @@ From the repository root, preview the links:
 
 ```bash
 stow --simulate --verbose --no-folding --target="$HOME" niri
+stow --simulate --verbose --no-folding --target="$HOME" autostart
 ```
 
 If the preview reports no conflict, deploy them:
 
 ```bash
 stow --verbose --no-folding --target="$HOME" niri
+stow --verbose --no-folding --target="$HOME" autostart
 niri validate
 ```
 
@@ -107,6 +115,7 @@ Remove only the links owned by this package with:
 
 ```bash
 stow --delete --verbose --target="$HOME" niri
+stow --delete --verbose --target="$HOME" autostart
 ```
 
 ## Related repositories

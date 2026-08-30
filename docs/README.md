@@ -10,6 +10,10 @@ directory:
 .
 ├── README.md
 ├── docs/
+├── autostart/
+│   └── .config/
+│       └── autostart/
+│           └── udiskie.desktop
 └── niri/
     └── .config/
         └── niri/
@@ -22,6 +26,7 @@ only when they contain reviewed files.
 | Path | Intended role |
 | --- | --- |
 | `docs/` | Deployment, recovery, component map, and customization notes. |
+| `autostart/` | Portable XDG autostart entries for reviewed session utilities. |
 | `niri/` | Portable Niri files arranged relative to `$HOME` for GNU Stow. |
 | Future component package | One independently deployable application or coherent configuration group. |
 | Future `hosts/` | Small, non-secret overrides for hardware-specific differences. |
@@ -57,6 +62,11 @@ It must not hard-code:
 The absence of manual XWayland configuration is intentional. Current Niri
 integrates `xwayland-satellite` on demand and exports `DISPLAY` itself.
 
+Chapter 07 adds an independent `autostart` Stow package. Its single desktop
+entry starts udiskie with automatic mounting enabled and notifications disabled
+until the notification daemon is selected. Keeping it separate avoids making a
+generic session utility part of the compositor configuration.
+
 ## Deployment lifecycle
 
 All deployment operations run from the repository root:
@@ -64,6 +74,8 @@ All deployment operations run from the repository root:
 ```bash
 stow --simulate --verbose --no-folding --target="$HOME" niri
 stow --verbose --no-folding --target="$HOME" niri
+stow --simulate --verbose --no-folding --target="$HOME" autostart
+stow --verbose --no-folding --target="$HOME" autostart
 niri validate
 ```
 
@@ -78,6 +90,7 @@ Remove the package links without deleting repository files:
 
 ```bash
 stow --delete --verbose --target="$HOME" niri
+stow --delete --verbose --target="$HOME" autostart
 ```
 
 Stow must stop on a conflict. Existing targets are reviewed and backed up
@@ -90,6 +103,7 @@ outside the active path; they are never overwritten blindly.
 | Deployment method | GNU Stow selected. |
 | Terminal | Kitty selected for the canonical system. Foot may be compared separately. |
 | Niri bootstrap | Present and intentionally minimal. |
+| Removable-media autostart | udiskie through a portable XDG desktop entry. |
 | Host-specific layout | Deferred; the portable bootstrap does not hard-code `us` or `es`. |
 
 ## Decisions still required
