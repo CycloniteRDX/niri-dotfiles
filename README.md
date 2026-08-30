@@ -6,9 +6,9 @@ Arch Linux post-install repository.
 ## Project status
 
 Bootstrap stage. The repository contains a small Niri package for proving that
-the compositor can start and recover, plus one XDG autostart entry for the
-reviewed removable-media service. It is not the final daily-driver
-configuration.
+the compositor can start and recover, one XDG autostart entry for the reviewed
+removable-media service, and a portable default-application map. It is not the
+final daily-driver configuration.
 
 ## Scope
 
@@ -67,11 +67,12 @@ See the [dotfiles design notes](docs/README.md).
 
 ## Current bootstrap
 
-The current Stow packages own two files:
+The current Stow packages own three files:
 
 ```text
 niri/.config/niri/config.kdl
 autostart/.config/autostart/udiskie.desktop
+mimeapps/.config/mimeapps.list
 ```
 
 They provide only:
@@ -81,6 +82,8 @@ They provide only:
 - `Super+Shift+E` to exit Niri through its confirmation dialog.
 - automatic removable-media mounting through udiskie, without notifications or
   a tray icon at this stage.
+- default handlers for web links, directories, documents, images, text, media,
+  archives, and office files.
 
 It deliberately does not configure outputs, scaling, keyboard layout, themes,
 bars, launchers, notifications, wallpaper, locking, idle handling, or
@@ -90,6 +93,8 @@ Package installation and the complete deployment procedure are documented in
 [chapter 05 of Arch Linux Post-install](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/05-minimal-graphical-bootstrap.md).
 The removable-media service is added in
 [chapter 07](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/07-core-workstation-services.md).
+Daily applications and the default-handler map are added in
+[chapter 09](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/09-daily-applications.md).
 
 ## Deploy with GNU Stow
 
@@ -98,6 +103,7 @@ From the repository root, preview the links:
 ```bash
 stow --simulate --verbose --no-folding --target="$HOME" niri
 stow --simulate --verbose --no-folding --target="$HOME" autostart
+stow --simulate --verbose --no-folding --target="$HOME" mimeapps
 ```
 
 If the preview reports no conflict, deploy them:
@@ -105,17 +111,20 @@ If the preview reports no conflict, deploy them:
 ```bash
 stow --verbose --no-folding --target="$HOME" niri
 stow --verbose --no-folding --target="$HOME" autostart
+stow --verbose --no-folding --target="$HOME" mimeapps
 niri validate
 ```
 
-Do not overwrite an existing `~/.config/niri/config.kdl`. Review and back up an
-existing target before deploying this package.
+Do not overwrite an existing `~/.config/niri/config.kdl` or
+`~/.config/mimeapps.list`. Review and back up an existing target before
+deploying its package.
 
 Remove only the links owned by this package with:
 
 ```bash
 stow --delete --verbose --target="$HOME" niri
 stow --delete --verbose --target="$HOME" autostart
+stow --delete --verbose --target="$HOME" mimeapps
 ```
 
 ## Related repositories

@@ -14,6 +14,9 @@ directory:
 │   └── .config/
 │       └── autostart/
 │           └── udiskie.desktop
+├── mimeapps/
+│   └── .config/
+│       └── mimeapps.list
 └── niri/
     └── .config/
         └── niri/
@@ -27,6 +30,7 @@ only when they contain reviewed files.
 | --- | --- |
 | `docs/` | Deployment, recovery, component map, and customization notes. |
 | `autostart/` | Portable XDG autostart entries for reviewed session utilities. |
+| `mimeapps/` | Portable XDG default-application associations. |
 | `niri/` | Portable Niri files arranged relative to `$HOME` for GNU Stow. |
 | Future component package | One independently deployable application or coherent configuration group. |
 | Future `hosts/` | Small, non-secret overrides for hardware-specific differences. |
@@ -67,6 +71,13 @@ entry starts udiskie with automatic mounting enabled and notifications disabled
 until the notification daemon is selected. Keeping it separate avoids making a
 generic session utility part of the compositor configuration.
 
+Chapter 09 adds an independent `mimeapps` Stow package. It records only the
+reviewed default desktop-file IDs for URLs and common local file types. It does
+not contain recent-file history, browser state, credentials, or generated
+application caches. An application's **Make default** action may edit this
+tracked file through the deployed symlink, so every such change must be
+reviewed with Git.
+
 ## Deployment lifecycle
 
 All deployment operations run from the repository root:
@@ -76,6 +87,8 @@ stow --simulate --verbose --no-folding --target="$HOME" niri
 stow --verbose --no-folding --target="$HOME" niri
 stow --simulate --verbose --no-folding --target="$HOME" autostart
 stow --verbose --no-folding --target="$HOME" autostart
+stow --simulate --verbose --no-folding --target="$HOME" mimeapps
+stow --verbose --no-folding --target="$HOME" mimeapps
 niri validate
 ```
 
@@ -83,6 +96,8 @@ After tracked files change, reconcile the links with:
 
 ```bash
 stow --restow --verbose --no-folding --target="$HOME" niri
+stow --restow --verbose --no-folding --target="$HOME" autostart
+stow --restow --verbose --no-folding --target="$HOME" mimeapps
 niri validate
 ```
 
@@ -91,6 +106,7 @@ Remove the package links without deleting repository files:
 ```bash
 stow --delete --verbose --target="$HOME" niri
 stow --delete --verbose --target="$HOME" autostart
+stow --delete --verbose --target="$HOME" mimeapps
 ```
 
 Stow must stop on a conflict. Existing targets are reviewed and backed up
@@ -104,6 +120,7 @@ outside the active path; they are never overwritten blindly.
 | Terminal | Kitty selected for the canonical system. Foot may be compared separately. |
 | Niri bootstrap | Present and intentionally minimal. |
 | Removable-media autostart | udiskie through a portable XDG desktop entry. |
+| Default applications | Portable `mimeapps.list` deployed as an independent Stow package. |
 | Host-specific layout | Deferred; the portable bootstrap does not hard-code `us` or `es`. |
 
 ## Decisions still required
