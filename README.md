@@ -5,9 +5,10 @@ Arch Linux post-install repository.
 
 ## Project status
 
-Session-lifecycle stage. The repository contains the reviewed Niri desktop,
+Portable daily-driver stage. The repository contains the reviewed Niri desktop,
 removable-media autostart, default-application map, bar, launcher, notification
-daemon, wallpaper location, screen-locker configuration, and idle lifecycle.
+daemon, wallpaper location, screen-locker configuration, idle lifecycle, and
+Kitty terminal configuration.
 Themes and host-specific output settings remain intentionally unfinished.
 
 ## Scope
@@ -78,6 +79,7 @@ fuzzel/.config/fuzzel/fuzzel.ini
 mako/.config/mako/config
 wallpapers/.local/share/wallpapers/README.md
 swaylock/.config/swaylock/config
+kitty/.config/kitty/kitty.conf
 ```
 
 They provide:
@@ -95,6 +97,9 @@ They provide:
 - a compact status bar, launcher, and notification presentation.
 - immediate and idle-triggered locking, monitor power control, and pre-suspend
   lock coordination.
+- complete portable Niri navigation, movement, sizing, workspace, floating, and
+  tabbed-layout bindings;
+- a reproducible opaque Kitty palette using Noto Sans Mono.
 
 It deliberately does not configure outputs, scaling, keyboard layout, themes,
 automatic idle suspend, hibernation, or automatic login. greetd and tuigreet
@@ -110,6 +115,8 @@ The visible desktop components are added in
 [chapter 10](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/10-desktop-components.md).
 Locking, idle handling, and login are added in
 [chapter 11](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/11-login-lock-and-idle.md).
+The portable daily-driver handoff and Kitty package are completed in
+[chapter 13](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/13-full-dotfiles-handoff.md).
 
 ## Deploy with GNU Stow
 
@@ -121,6 +128,7 @@ stow --simulate --verbose --no-folding --target="$HOME" autostart
 stow --simulate --verbose --no-folding --target="$HOME" mimeapps
 stow --simulate --verbose --no-folding --target="$HOME" waybar fuzzel mako wallpapers
 stow --simulate --verbose --no-folding --target="$HOME" swaylock
+stow --simulate --verbose --no-folding --target="$HOME" kitty
 ```
 
 If the preview reports no conflict, deploy them:
@@ -131,6 +139,7 @@ stow --verbose --no-folding --target="$HOME" autostart
 stow --verbose --no-folding --target="$HOME" mimeapps
 stow --verbose --no-folding --target="$HOME" waybar fuzzel mako wallpapers
 stow --verbose --no-folding --target="$HOME" swaylock
+stow --verbose --no-folding --target="$HOME" kitty
 niri validate
 ```
 
@@ -146,6 +155,7 @@ stow --delete --verbose --target="$HOME" autostart
 stow --delete --verbose --target="$HOME" mimeapps
 stow --delete --verbose --target="$HOME" waybar fuzzel mako wallpapers
 stow --delete --verbose --target="$HOME" swaylock
+stow --delete --verbose --target="$HOME" kitty
 ```
 
 ## Related repositories

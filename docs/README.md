@@ -37,6 +37,7 @@ only when they contain reviewed files.
 | `mako/` | Notification presentation and urgency policy. |
 | `wallpapers/` | Reviewed wallpaper assets or documentation. |
 | `swaylock/` | Portable lock-screen appearance; authentication remains PAM-owned. |
+| `kitty/` | Portable terminal behavior and palette without shell state or secrets. |
 | Future component package | One independently deployable application or coherent configuration group. |
 | Future `hosts/` | Small, non-secret overrides for hardware-specific differences. |
 | Future `scripts/` | Narrow deployment or validation helpers, only when they reduce mistakes. |
@@ -94,6 +95,11 @@ not suspend on a timer; it coordinates lock, monitor power, and the
 `before-sleep` event. greetd and tuigreet remain machine-level configuration in
 the post-install repository.
 
+Chapter 13 replaces the Niri bootstrap behavior with the complete portable
+daily-driver bindings and adds Kitty as an independent package. Output modes,
+scaling, TrackPoint tuning, and wallpaper binaries remain outside the shared
+baseline until each host has been measured.
+
 ## Deployment lifecycle
 
 All deployment operations run from the repository root:
@@ -109,6 +115,8 @@ stow --simulate --verbose --no-folding --target="$HOME" waybar fuzzel mako wallp
 stow --verbose --no-folding --target="$HOME" waybar fuzzel mako wallpapers
 stow --simulate --verbose --no-folding --target="$HOME" swaylock
 stow --verbose --no-folding --target="$HOME" swaylock
+stow --simulate --verbose --no-folding --target="$HOME" kitty
+stow --verbose --no-folding --target="$HOME" kitty
 niri validate
 ```
 
@@ -120,6 +128,7 @@ stow --restow --verbose --no-folding --target="$HOME" autostart
 stow --restow --verbose --no-folding --target="$HOME" mimeapps
 stow --restow --verbose --no-folding --target="$HOME" waybar fuzzel mako wallpapers
 stow --restow --verbose --no-folding --target="$HOME" swaylock
+stow --restow --verbose --no-folding --target="$HOME" kitty
 niri validate
 ```
 
@@ -131,6 +140,7 @@ stow --delete --verbose --target="$HOME" autostart
 stow --delete --verbose --target="$HOME" mimeapps
 stow --delete --verbose --target="$HOME" waybar fuzzel mako wallpapers
 stow --delete --verbose --target="$HOME" swaylock
+stow --delete --verbose --target="$HOME" kitty
 ```
 
 Stow must stop on a conflict. Existing targets are reviewed and backed up
@@ -152,6 +162,8 @@ outside the active path; they are never overwritten blindly.
 | Screenshots | Niri's built-in actions. |
 | Screen lock | swaylock with PAM authentication. |
 | Idle lifecycle | swayidle: lock at 5 min, monitors off at 10 min, lock before sleep. |
+| Niri daily-driver controls | Portable focus, movement, workspaces, sizing, floating, tabs, screenshots, and hardware keys. |
+| Kitty | Noto Sans Mono with an opaque dark cyan/fuchsia palette. |
 | Host-specific layout | Deferred; the portable bootstrap does not hard-code `us` or `es`. |
 
 ## Decisions still required
