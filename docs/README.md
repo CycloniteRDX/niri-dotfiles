@@ -32,6 +32,10 @@ only when they contain reviewed files.
 | `autostart/` | Portable XDG autostart entries for reviewed session utilities. |
 | `mimeapps/` | Portable XDG default-application associations. |
 | `niri/` | Portable Niri files arranged relative to `$HOME` for GNU Stow. |
+| `waybar/` | Niri-aware status bar configuration and CSS. |
+| `fuzzel/` | Application-launcher configuration. |
+| `mako/` | Notification presentation and urgency policy. |
+| `wallpapers/` | Reviewed wallpaper assets or documentation. |
 | Future component package | One independently deployable application or coherent configuration group. |
 | Future `hosts/` | Small, non-secret overrides for hardware-specific differences. |
 | Future `scripts/` | Narrow deployment or validation helpers, only when they reduce mistakes. |
@@ -78,6 +82,11 @@ application caches. An application's **Make default** action may edit this
 tracked file through the deployed symlink, so every such change must be
 reviewed with Git.
 
+Chapter 10 advances the Niri package beyond its bootstrap contract. Niri starts
+Waybar, Mako, and swaybg and owns launcher, screenshot, hardware-key, and exit
+bindings. Waybar, Fuzzel, and Mako remain independent Stow packages. Niri's
+built-in screenshot UI avoids an overlapping screenshot frontend.
+
 ## Deployment lifecycle
 
 All deployment operations run from the repository root:
@@ -89,6 +98,8 @@ stow --simulate --verbose --no-folding --target="$HOME" autostart
 stow --verbose --no-folding --target="$HOME" autostart
 stow --simulate --verbose --no-folding --target="$HOME" mimeapps
 stow --verbose --no-folding --target="$HOME" mimeapps
+stow --simulate --verbose --no-folding --target="$HOME" waybar fuzzel mako wallpapers
+stow --verbose --no-folding --target="$HOME" waybar fuzzel mako wallpapers
 niri validate
 ```
 
@@ -98,6 +109,7 @@ After tracked files change, reconcile the links with:
 stow --restow --verbose --no-folding --target="$HOME" niri
 stow --restow --verbose --no-folding --target="$HOME" autostart
 stow --restow --verbose --no-folding --target="$HOME" mimeapps
+stow --restow --verbose --no-folding --target="$HOME" waybar fuzzel mako wallpapers
 niri validate
 ```
 
@@ -107,6 +119,7 @@ Remove the package links without deleting repository files:
 stow --delete --verbose --target="$HOME" niri
 stow --delete --verbose --target="$HOME" autostart
 stow --delete --verbose --target="$HOME" mimeapps
+stow --delete --verbose --target="$HOME" waybar fuzzel mako wallpapers
 ```
 
 Stow must stop on a conflict. Existing targets are reviewed and backed up
@@ -118,19 +131,21 @@ outside the active path; they are never overwritten blindly.
 | --- | --- |
 | Deployment method | GNU Stow selected. |
 | Terminal | Kitty selected for the canonical system. Foot may be compared separately. |
-| Niri bootstrap | Present and intentionally minimal. |
+| Niri configuration | Starts the reviewed chapter 10 session components. |
 | Removable-media autostart | udiskie through a portable XDG desktop entry. |
 | Default applications | Portable `mimeapps.list` deployed as an independent Stow package. |
+| Status bar | Waybar with native Niri modules. |
+| Launcher | Fuzzel. |
+| Notifications | Mako. |
+| Wallpaper | swaybg; solid colour until a reviewed image is added. |
+| Screenshots | Niri's built-in actions. |
 | Host-specific layout | Deferred; the portable bootstrap does not hard-code `us` or `es`. |
 
 ## Decisions still required
 
 - Greeter and session launch model.
-- Bar or shell architecture.
-- Launcher.
-- Notification daemon.
 - Lock and idle components.
-- Wallpaper and theme integration.
+- Theme integration.
 - Host override strategy for the two ThinkPads.
 
 Each decision should be made in the post-install project before its

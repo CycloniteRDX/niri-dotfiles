@@ -5,10 +5,10 @@ Arch Linux post-install repository.
 
 ## Project status
 
-Bootstrap stage. The repository contains a small Niri package for proving that
-the compositor can start and recover, one XDG autostart entry for the reviewed
-removable-media service, and a portable default-application map. It is not the
-final daily-driver configuration.
+Desktop-component stage. The repository contains the reviewed Niri bootstrap,
+removable-media autostart, default-application map, bar, launcher, notification
+daemon, and wallpaper location. Login, locking, idle handling, themes, and
+host-specific output settings remain intentionally unfinished.
 
 ## Scope
 
@@ -65,29 +65,36 @@ example files may use clearly fake placeholders.
 
 See the [dotfiles design notes](docs/README.md).
 
-## Current bootstrap
+## Current configuration
 
-The current Stow packages own three files:
+The current Stow packages own these areas:
 
 ```text
 niri/.config/niri/config.kdl
 autostart/.config/autostart/udiskie.desktop
 mimeapps/.config/mimeapps.list
+waybar/.config/waybar/{config.jsonc,style.css}
+fuzzel/.config/fuzzel/fuzzel.ini
+mako/.config/mako/config
+wallpapers/.local/share/wallpapers/README.md
 ```
 
-They provide only:
+They provide:
 
 - the MATE polkit authentication-agent autostart;
 - `Super+Enter` to open Kitty;
-- `Super+Shift+E` to exit Niri through its confirmation dialog.
+- `Super+D` to open Fuzzel;
+- `Super+Shift+E` to exit Niri through its confirmation dialog;
+- Niri screenshot and hardware-key bindings;
+- Waybar, Mako, and swaybg session startup;
 - automatic removable-media mounting through udiskie, without notifications or
-  a tray icon at this stage.
+  a tray icon of its own;
 - default handlers for web links, directories, documents, images, text, media,
-  archives, and office files.
+  archives, calendar files, and office files;
+- a compact status bar, launcher, and notification presentation.
 
 It deliberately does not configure outputs, scaling, keyboard layout, themes,
-bars, launchers, notifications, wallpaper, locking, idle handling, or
-automatic login.
+locking, idle handling, suspend automation, or automatic login.
 
 Package installation and the complete deployment procedure are documented in
 [chapter 05 of Arch Linux Post-install](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/05-minimal-graphical-bootstrap.md).
@@ -95,6 +102,8 @@ The removable-media service is added in
 [chapter 07](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/07-core-workstation-services.md).
 Daily applications and the default-handler map are added in
 [chapter 09](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/09-daily-applications.md).
+The visible desktop components are added in
+[chapter 10](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/10-desktop-components.md).
 
 ## Deploy with GNU Stow
 
@@ -104,6 +113,7 @@ From the repository root, preview the links:
 stow --simulate --verbose --no-folding --target="$HOME" niri
 stow --simulate --verbose --no-folding --target="$HOME" autostart
 stow --simulate --verbose --no-folding --target="$HOME" mimeapps
+stow --simulate --verbose --no-folding --target="$HOME" waybar fuzzel mako wallpapers
 ```
 
 If the preview reports no conflict, deploy them:
@@ -112,6 +122,7 @@ If the preview reports no conflict, deploy them:
 stow --verbose --no-folding --target="$HOME" niri
 stow --verbose --no-folding --target="$HOME" autostart
 stow --verbose --no-folding --target="$HOME" mimeapps
+stow --verbose --no-folding --target="$HOME" waybar fuzzel mako wallpapers
 niri validate
 ```
 
@@ -125,6 +136,7 @@ Remove only the links owned by this package with:
 stow --delete --verbose --target="$HOME" niri
 stow --delete --verbose --target="$HOME" autostart
 stow --delete --verbose --target="$HOME" mimeapps
+stow --delete --verbose --target="$HOME" waybar fuzzel mako wallpapers
 ```
 
 ## Related repositories
