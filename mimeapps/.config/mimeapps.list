@@ -20,6 +20,7 @@ audio/ogg=io.github.celluloid_player.Celluloid.desktop;
 application/zip=org.gnome.FileRoller.desktop;
 application/x-7z-compressed=org.gnome.FileRoller.desktop;
 application/x-tar=org.gnome.FileRoller.desktop;
+text/calendar=org.gnome.Calendar.desktop;
 application/vnd.oasis.opendocument.text=libreoffice-writer.desktop;
 application/msword=libreoffice-writer.desktop;
 application/vnd.openxmlformats-officedocument.wordprocessingml.document=libreoffice-writer.desktop;
