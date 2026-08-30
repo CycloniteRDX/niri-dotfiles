@@ -5,11 +5,13 @@ spawn-at-startup "/usr/lib/mate-polkit/polkit-mate-authentication-agent-1"
 spawn-at-startup "waybar"
 spawn-at-startup "mako"
 spawn-at-startup "swaybg" "-c" "#18181c"
+spawn-at-startup "swayidle" "-w" "timeout" "300" "swaylock -f" "timeout" "600" "niri msg action power-off-monitors" "resume" "niri msg action power-on-monitors" "before-sleep" "swaylock -f" "lock" "swaylock -f"
 
 binds {
     // Mod is the Super key when Niri runs directly from a TTY.
     Mod+Return hotkey-overlay-title="Open Kitty" { spawn "kitty"; }
     Mod+D hotkey-overlay-title="Open application launcher" { spawn "fuzzel"; }
+    Super+Alt+L allow-inhibiting=false hotkey-overlay-title="Lock screen" { spawn "swaylock" "-f"; }
 
     // Niri provides the screenshot UI and writes to the XDG Pictures directory.
     Print hotkey-overlay-title="Take interactive screenshot" { screenshot; }

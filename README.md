@@ -5,10 +5,10 @@ Arch Linux post-install repository.
 
 ## Project status
 
-Desktop-component stage. The repository contains the reviewed Niri bootstrap,
+Session-lifecycle stage. The repository contains the reviewed Niri desktop,
 removable-media autostart, default-application map, bar, launcher, notification
-daemon, and wallpaper location. Login, locking, idle handling, themes, and
-host-specific output settings remain intentionally unfinished.
+daemon, wallpaper location, screen-locker configuration, and idle lifecycle.
+Themes and host-specific output settings remain intentionally unfinished.
 
 ## Scope
 
@@ -77,6 +77,7 @@ waybar/.config/waybar/{config.jsonc,style.css}
 fuzzel/.config/fuzzel/fuzzel.ini
 mako/.config/mako/config
 wallpapers/.local/share/wallpapers/README.md
+swaylock/.config/swaylock/config
 ```
 
 They provide:
@@ -92,9 +93,12 @@ They provide:
 - default handlers for web links, directories, documents, images, text, media,
   archives, calendar files, and office files;
 - a compact status bar, launcher, and notification presentation.
+- immediate and idle-triggered locking, monitor power control, and pre-suspend
+  lock coordination.
 
 It deliberately does not configure outputs, scaling, keyboard layout, themes,
-locking, idle handling, suspend automation, or automatic login.
+automatic idle suspend, hibernation, or automatic login. greetd and tuigreet
+are system configuration documented outside this user-level repository.
 
 Package installation and the complete deployment procedure are documented in
 [chapter 05 of Arch Linux Post-install](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/05-minimal-graphical-bootstrap.md).
@@ -104,6 +108,8 @@ Daily applications and the default-handler map are added in
 [chapter 09](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/09-daily-applications.md).
 The visible desktop components are added in
 [chapter 10](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/10-desktop-components.md).
+Locking, idle handling, and login are added in
+[chapter 11](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/11-login-lock-and-idle.md).
 
 ## Deploy with GNU Stow
 
@@ -114,6 +120,7 @@ stow --simulate --verbose --no-folding --target="$HOME" niri
 stow --simulate --verbose --no-folding --target="$HOME" autostart
 stow --simulate --verbose --no-folding --target="$HOME" mimeapps
 stow --simulate --verbose --no-folding --target="$HOME" waybar fuzzel mako wallpapers
+stow --simulate --verbose --no-folding --target="$HOME" swaylock
 ```
 
 If the preview reports no conflict, deploy them:
@@ -123,6 +130,7 @@ stow --verbose --no-folding --target="$HOME" niri
 stow --verbose --no-folding --target="$HOME" autostart
 stow --verbose --no-folding --target="$HOME" mimeapps
 stow --verbose --no-folding --target="$HOME" waybar fuzzel mako wallpapers
+stow --verbose --no-folding --target="$HOME" swaylock
 niri validate
 ```
 
@@ -137,6 +145,7 @@ stow --delete --verbose --target="$HOME" niri
 stow --delete --verbose --target="$HOME" autostart
 stow --delete --verbose --target="$HOME" mimeapps
 stow --delete --verbose --target="$HOME" waybar fuzzel mako wallpapers
+stow --delete --verbose --target="$HOME" swaylock
 ```
 
 ## Related repositories

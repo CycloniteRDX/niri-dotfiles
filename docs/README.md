@@ -36,6 +36,7 @@ only when they contain reviewed files.
 | `fuzzel/` | Application-launcher configuration. |
 | `mako/` | Notification presentation and urgency policy. |
 | `wallpapers/` | Reviewed wallpaper assets or documentation. |
+| `swaylock/` | Portable lock-screen appearance; authentication remains PAM-owned. |
 | Future component package | One independently deployable application or coherent configuration group. |
 | Future `hosts/` | Small, non-secret overrides for hardware-specific differences. |
 | Future `scripts/` | Narrow deployment or validation helpers, only when they reduce mistakes. |
@@ -87,6 +88,12 @@ Waybar, Mako, and swaybg and owns launcher, screenshot, hardware-key, and exit
 bindings. Waybar, Fuzzel, and Mako remain independent Stow packages. Niri's
 built-in screenshot UI avoids an overlapping screenshot frontend.
 
+Chapter 11 adds swaylock as a separate Stow package and starts swayidle from
+Niri with explicit lifecycle commands. swayidle owns no credentials and does
+not suspend on a timer; it coordinates lock, monitor power, and the
+`before-sleep` event. greetd and tuigreet remain machine-level configuration in
+the post-install repository.
+
 ## Deployment lifecycle
 
 All deployment operations run from the repository root:
@@ -100,6 +107,8 @@ stow --simulate --verbose --no-folding --target="$HOME" mimeapps
 stow --verbose --no-folding --target="$HOME" mimeapps
 stow --simulate --verbose --no-folding --target="$HOME" waybar fuzzel mako wallpapers
 stow --verbose --no-folding --target="$HOME" waybar fuzzel mako wallpapers
+stow --simulate --verbose --no-folding --target="$HOME" swaylock
+stow --verbose --no-folding --target="$HOME" swaylock
 niri validate
 ```
 
@@ -110,6 +119,7 @@ stow --restow --verbose --no-folding --target="$HOME" niri
 stow --restow --verbose --no-folding --target="$HOME" autostart
 stow --restow --verbose --no-folding --target="$HOME" mimeapps
 stow --restow --verbose --no-folding --target="$HOME" waybar fuzzel mako wallpapers
+stow --restow --verbose --no-folding --target="$HOME" swaylock
 niri validate
 ```
 
@@ -120,6 +130,7 @@ stow --delete --verbose --target="$HOME" niri
 stow --delete --verbose --target="$HOME" autostart
 stow --delete --verbose --target="$HOME" mimeapps
 stow --delete --verbose --target="$HOME" waybar fuzzel mako wallpapers
+stow --delete --verbose --target="$HOME" swaylock
 ```
 
 Stow must stop on a conflict. Existing targets are reviewed and backed up
@@ -139,12 +150,13 @@ outside the active path; they are never overwritten blindly.
 | Notifications | Mako. |
 | Wallpaper | swaybg; solid colour until a reviewed image is added. |
 | Screenshots | Niri's built-in actions. |
+| Screen lock | swaylock with PAM authentication. |
+| Idle lifecycle | swayidle: lock at 5 min, monitors off at 10 min, lock before sleep. |
 | Host-specific layout | Deferred; the portable bootstrap does not hard-code `us` or `es`. |
 
 ## Decisions still required
 
-- Greeter and session launch model.
-- Lock and idle components.
+- Graphical greeter evolution beyond the system-level tuigreet baseline.
 - Theme integration.
 - Host override strategy for the two ThinkPads.
 

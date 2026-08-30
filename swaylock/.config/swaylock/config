@@ -1,0 +1,22 @@
+color=18181c
+font=Noto Sans
+font-size=24
+indicator
+indicator-radius=90
+indicator-thickness=8
+inside-color=18181ccc
+inside-clear-color=eed49fcc
+inside-ver-color=8aadf4cc
+inside-wrong-color=ed8796cc
+ring-color=494d64ff
+ring-clear-color=eed49fff
+ring-ver-color=8aadf4ff
+ring-wrong-color=ed8796ff
+key-hl-color=a6da95ff
+bs-hl-color=ed8796ff
+text-color=e8e8ecff
+text-clear-color=18181cff
+text-ver-color=18181cff
+text-wrong-color=18181cff
+separator-color=00000000
+show-failed-attempts
