@@ -65,7 +65,6 @@ It must not hard-code:
 
 - an output name, resolution, refresh rate, or scale;
 - `DISPLAY` or a manual `xwayland-satellite` process;
-- `us` or `es` keyboard layout;
 - paths containing a user name or machine identifier;
 - a greeter, lock screen, bar, launcher, notification daemon, or shell.
 
@@ -164,7 +163,7 @@ outside the active path; they are never overwritten blindly.
 | Idle lifecycle | swayidle: lock at 5 min, monitors off at 10 min, lock before sleep. |
 | Niri daily-driver controls | Portable focus, movement, workspaces, sizing, floating, tabs, screenshots, and hardware keys. |
 | Kitty | Noto Sans Mono with an opaque dark cyan/fuchsia palette. |
-| Host-specific layout | Deferred; the portable bootstrap does not hard-code `us` or `es`. |
+| Keyboard layout | Portable baseline sets `us`; per-host overrides remain deferred. |
 
 ## Decisions still required
 

@@ -101,9 +101,11 @@ They provide:
   tabbed-layout bindings;
 - a reproducible opaque Kitty palette using Noto Sans Mono.
 
-It deliberately does not configure outputs, scaling, keyboard layout, themes,
-automatic idle suspend, hibernation, or automatic login. greetd and tuigreet
-are system configuration documented outside this user-level repository.
+It deliberately does not configure outputs, scaling, themes, automatic idle
+suspend, hibernation, or automatic login. The portable baseline currently sets
+the XKB layout to `us`; a future host-override design may replace that shared
+choice per machine. greetd and tuigreet are system configuration documented
+outside this user-level repository.
 
 Package installation and the complete deployment procedure are documented in
 [chapter 05 of Arch Linux Post-install](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/05-minimal-graphical-bootstrap.md).
