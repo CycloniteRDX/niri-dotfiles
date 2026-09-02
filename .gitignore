@@ -8,6 +8,7 @@ Thumbs.db
 
 # Local and secret material
 *.local
+!*/.local/
 *.secret
 secrets/
 private/

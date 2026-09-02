@@ -7,18 +7,20 @@
 }
 
 window#waybar {
-    background: rgba(24, 24, 28, 0.96);
-    color: #e8e8ec;
+    background: rgba(11, 15, 23, 0.94);
+    color: #dce7f2;
+    border-bottom: 1px solid rgba(92, 225, 230, 0.22);
 }
 
 #workspaces button {
     padding: 0 5px;
-    color: #8e8e9a;
+    color: #7f8fa3;
     background: transparent;
 }
 
-#workspaces button.focused { color: #8aadf4; }
-#workspaces button.urgent { color: #ed8796; }
+#workspaces button.focused,
+#workspaces button.active { color: #5ce1e6; }
+#workspaces button.urgent { color: #ff6b81; }
 
 #window,
 #clock,
@@ -35,11 +37,15 @@ window#waybar {
 }
 
 #temperature.critical,
-#battery.critical { color: #ed8796; }
-#battery.warning { color: #eed49f; }
-#custom-session { color: #f5bde6; }
+#battery.critical { color: #ff6b81; }
+#battery.warning { color: #f3c969; }
+#network.disconnected { color: #f3c969; }
+#pulseaudio.muted { color: #7f8fa3; }
+#custom-session { color: #f05adf; }
 
 tooltip {
-    background: #18181c;
-    border: 1px solid #494d64;
+    background: #121824;
+    color: #dce7f2;
+    border: 1px solid #2a3a50;
+    border-radius: 8px;
 }

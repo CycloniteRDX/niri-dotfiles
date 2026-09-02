@@ -1,7 +1,7 @@
 font=Noto Sans 11
-background-color=#18181cf2
-text-color=#e8e8ecff
-border-color=#8aadf4ff
+background-color=#121824f2
+text-color=#dce7f2ff
+border-color=#5ce1e6ff
 border-size=2
 border-radius=8
 width=360
@@ -14,5 +14,5 @@ max-visible=5
 anchor=top-right
 
 [urgency=high]
-border-color=#ed8796ff
+border-color=#ff6b81ff
 default-timeout=0

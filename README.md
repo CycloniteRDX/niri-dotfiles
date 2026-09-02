@@ -8,8 +8,10 @@ Arch Linux post-install repository.
 Portable daily-driver stage. The repository contains the reviewed Niri desktop,
 removable-media autostart, default-application map, bar, launcher, notification
 daemon, wallpaper location, screen-locker configuration, idle lifecycle, and
-Kitty terminal configuration.
-Themes and host-specific output settings remain intentionally unfinished.
+Kitty terminal configuration. It also contains the portable Midnight Circuit
+visual foundation: a project-owned wallpaper, one shared dark palette, GTK
+preferences, Papirus icons, and the Breeze cursor theme.
+Host-specific output settings remain intentionally unfinished.
 
 ## Scope
 
@@ -78,8 +80,12 @@ waybar/.config/waybar/{config.jsonc,style.css}
 fuzzel/.config/fuzzel/fuzzel.ini
 mako/.config/mako/config
 wallpapers/.local/share/wallpapers/README.md
+wallpapers/.local/share/wallpapers/ATTRIBUTION.md
+wallpapers/.local/share/wallpapers/midnight-circuit.svg
 swaylock/.config/swaylock/config
 kitty/.config/kitty/kitty.conf
+theme/.config/gtk-3.0/settings.ini
+theme/.config/gtk-4.0/settings.ini
 ```
 
 They provide:
@@ -99,13 +105,15 @@ They provide:
   lock coordination.
 - complete portable Niri navigation, movement, sizing, workspace, floating, and
   tabbed-layout bindings;
-- a reproducible opaque Kitty palette using Noto Sans Mono.
+- a reproducible Midnight Circuit palette using Noto Sans and Noto Sans Mono;
+- a project-owned SVG wallpaper with a solid-colour fallback;
+- dark GTK preferences, Papirus Dark icons, and the Breeze cursor theme.
 
-It deliberately does not configure outputs, scaling, themes, automatic idle
-suspend, hibernation, or automatic login. The portable baseline currently sets
-the XKB layout to `us`; a future host-override design may replace that shared
-choice per machine. greetd and tuigreet are system configuration documented
-outside this user-level repository.
+It deliberately does not configure outputs, scaling, Qt theme overrides,
+automatic idle suspend, hibernation, or automatic login. The portable baseline
+currently sets the XKB layout to `us`; a future host-override design may replace
+that shared choice per machine. greetd and tuigreet are system configuration
+documented outside this user-level repository.
 
 Package installation and the complete deployment procedure are documented in
 [chapter 05 of Arch Linux Post-install](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/05-minimal-graphical-bootstrap.md).
@@ -119,6 +127,8 @@ Locking, idle handling, and login are added in
 [chapter 11](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/11-login-lock-and-idle.md).
 The portable daily-driver handoff and Kitty package are completed in
 [chapter 13](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/13-full-dotfiles-handoff.md).
+The visual foundation is deployed and verified in
+[chapter 15](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/15-visual-foundation.md).
 
 ## Deploy with GNU Stow
 
@@ -131,6 +141,7 @@ stow --simulate --verbose --no-folding --target="$HOME" mimeapps
 stow --simulate --verbose --no-folding --target="$HOME" waybar fuzzel mako wallpapers
 stow --simulate --verbose --no-folding --target="$HOME" swaylock
 stow --simulate --verbose --no-folding --target="$HOME" kitty
+stow --simulate --verbose --no-folding --target="$HOME" theme
 ```
 
 If the preview reports no conflict, deploy them:
@@ -142,6 +153,7 @@ stow --verbose --no-folding --target="$HOME" mimeapps
 stow --verbose --no-folding --target="$HOME" waybar fuzzel mako wallpapers
 stow --verbose --no-folding --target="$HOME" swaylock
 stow --verbose --no-folding --target="$HOME" kitty
+stow --verbose --no-folding --target="$HOME" theme
 niri validate
 ```
 
@@ -158,6 +170,7 @@ stow --delete --verbose --target="$HOME" mimeapps
 stow --delete --verbose --target="$HOME" waybar fuzzel mako wallpapers
 stow --delete --verbose --target="$HOME" swaylock
 stow --delete --verbose --target="$HOME" kitty
+stow --delete --verbose --target="$HOME" theme
 ```
 
 ## Related repositories

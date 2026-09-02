@@ -38,6 +38,7 @@ only when they contain reviewed files.
 | `wallpapers/` | Reviewed wallpaper assets or documentation. |
 | `swaylock/` | Portable lock-screen appearance; authentication remains PAM-owned. |
 | `kitty/` | Portable terminal behavior and palette without shell state or secrets. |
+| `theme/` | Portable GTK preferences; packages and GSettings remain system-integration concerns. |
 | Future component package | One independently deployable application or coherent configuration group. |
 | Future `hosts/` | Small, non-secret overrides for hardware-specific differences. |
 | Future `scripts/` | Narrow deployment or validation helpers, only when they reduce mistakes. |
@@ -96,8 +97,14 @@ the post-install repository.
 
 Chapter 13 replaces the Niri bootstrap behavior with the complete portable
 daily-driver bindings and adds Kitty as an independent package. Output modes,
-scaling, TrackPoint tuning, and wallpaper binaries remain outside the shared
-baseline until each host has been measured.
+scaling, and TrackPoint tuning remain outside the shared baseline until each
+host has been measured.
+
+Chapter 15 adds the Midnight Circuit visual foundation without replacing the
+modular desktop components. The shared package owns GTK preference files and a
+project-authored SVG wallpaper. Niri owns cursor environment propagation and
+the wallpaper fallback; the post-install repository owns the corresponding
+official Arch packages and GSettings integration.
 
 ## Deployment lifecycle
 
@@ -116,6 +123,8 @@ stow --simulate --verbose --no-folding --target="$HOME" swaylock
 stow --verbose --no-folding --target="$HOME" swaylock
 stow --simulate --verbose --no-folding --target="$HOME" kitty
 stow --verbose --no-folding --target="$HOME" kitty
+stow --simulate --verbose --no-folding --target="$HOME" theme
+stow --verbose --no-folding --target="$HOME" theme
 niri validate
 ```
 
@@ -128,6 +137,7 @@ stow --restow --verbose --no-folding --target="$HOME" mimeapps
 stow --restow --verbose --no-folding --target="$HOME" waybar fuzzel mako wallpapers
 stow --restow --verbose --no-folding --target="$HOME" swaylock
 stow --restow --verbose --no-folding --target="$HOME" kitty
+stow --restow --verbose --no-folding --target="$HOME" theme
 niri validate
 ```
 
@@ -140,6 +150,7 @@ stow --delete --verbose --target="$HOME" mimeapps
 stow --delete --verbose --target="$HOME" waybar fuzzel mako wallpapers
 stow --delete --verbose --target="$HOME" swaylock
 stow --delete --verbose --target="$HOME" kitty
+stow --delete --verbose --target="$HOME" theme
 ```
 
 Stow must stop on a conflict. Existing targets are reviewed and backed up
@@ -157,18 +168,21 @@ outside the active path; they are never overwritten blindly.
 | Status bar | Waybar with native Niri modules. |
 | Launcher | Fuzzel. |
 | Notifications | Mako. |
-| Wallpaper | swaybg; solid colour until a reviewed image is added. |
+| Wallpaper | swaybg with the project-owned `midnight-circuit.svg` and a dark solid fallback. |
 | Screenshots | Niri's built-in actions. |
 | Screen lock | swaylock with PAM authentication. |
 | Idle lifecycle | swayidle: lock at 5 min, monitors off at 10 min, lock before sleep. |
 | Niri daily-driver controls | Portable focus, movement, workspaces, sizing, floating, tabs, screenshots, and hardware keys. |
-| Kitty | Noto Sans Mono with an opaque dark cyan/fuchsia palette. |
+| Visual palette | Midnight Circuit: dark navy and graphite, cyan primary accent, restrained fuchsia secondary accent. |
+| GTK | `adw-gtk3-dark` for GTK 3 and the standard dark preference for GTK 4/libadwaita. |
+| Icons | Papirus Dark. |
+| Cursor | `breeze_cursors`, 24 px, exported by Niri for the Wayland session. |
+| Kitty | Noto Sans Mono with the shared opaque Midnight Circuit palette. |
 | Keyboard layout | Portable baseline sets `us`; per-host overrides remain deferred. |
 
 ## Decisions still required
 
 - Graphical greeter evolution beyond the system-level tuigreet baseline.
-- Theme integration.
 - Host override strategy for the two ThinkPads.
 
 Each decision should be made in the post-install project before its
