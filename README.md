@@ -68,6 +68,11 @@ example files may use clearly fake placeholders.
 
 See the [dotfiles design notes](docs/README.md).
 
+The design notes also define the immutable
+[post-install checkpoints](docs/README.md#post-install-checkpoints). Use those
+tags when following the companion guide chapter by chapter; `main` represents
+the latest reviewed desktop and can contain components from later chapters.
+
 ## Current configuration
 
 The current Stow packages own these areas:

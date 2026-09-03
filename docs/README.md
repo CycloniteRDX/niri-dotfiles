@@ -53,6 +53,47 @@ file instead of replacing the whole `~/.config/niri` directory with one folded
 directory symlink. This leaves the target structure easy to inspect and makes
 future non-Stow files or host-specific composition less surprising.
 
+## Post-install checkpoints
+
+`main` is the latest reviewed desktop, not the configuration for every earlier
+chapter. A clean installation following `arch-linux-post-install` therefore
+checks out an immutable tag before deploying the files introduced by each
+chapter:
+
+| Post-install chapter | Git tag | Commit | New configuration stage |
+| --- | --- | --- | --- |
+| 05 | `post-install-05-v1` | `499059b` | Minimal Niri and polkit bootstrap |
+| 07 | `post-install-07-v1` | `291d85b` | udiskie XDG autostart |
+| 09 | `post-install-09-v1` | `7d60d9d` | MIME defaults, including calendar files |
+| 10 | `post-install-10-v1` | `dac44e8` | Waybar, Fuzzel, Mako and solid swaybg background |
+| 11 | `post-install-11-v1` | `63daf48` | swaylock and swayidle lifecycle |
+| 13 | `post-install-13-v1` | `4bcd8cd` | Portable daily-driver Niri and Kitty configuration |
+| 15 | `post-install-15-v1` | `0e66f44` | Midnight Circuit visual foundation |
+
+The tags are deliberately detached checkpoints. Switching from one to the next
+updates the tracked targets behind existing Stow links without pretending that
+an earlier chapter is the current development tip. Before every switch, the
+working tree must be clean. Fetch and select a checkpoint with:
+
+```bash
+git status --short --branch
+git fetch --prune --tags origin
+git switch --detach post-install-10-v1
+git describe --tags --exact-match
+git log -1 --oneline
+```
+
+Replace the example tag with the one required by the current chapter. Do not
+merge an older checkpoint into a newer commit: because the older commit is
+already an ancestor, that operation correctly leaves the newer checkout in
+place. `git switch --detach TAG` is the intentional operation for reproducing
+an earlier stage.
+
+After a switch, run the chapter's `stow --restow` command for packages whose
+tracked files changed and validate Niri before leaving the working session.
+Normal personal development should happen on a branch, never by committing on
+a detached checkpoint.
+
 ## Current bootstrap contract
 
 The chapter 05 Niri package must remain small enough to audit from TTY. It may
