@@ -60,15 +60,23 @@ chapter. A clean installation following `arch-linux-post-install` therefore
 checks out an immutable tag before deploying the files introduced by each
 chapter:
 
-| Post-install chapter | Git tag | Commit | New configuration stage |
+| Post-install chapter | Git tag | Corrected base | New configuration stage |
 | --- | --- | --- | --- |
 | 05 | `post-install-05-v1` | `499059b` | Minimal Niri and polkit bootstrap |
 | 07 | `post-install-07-v1` | `291d85b` | udiskie XDG autostart |
 | 09 | `post-install-09-v1` | `7d60d9d` | MIME defaults, including calendar files |
 | 10 | `post-install-10-v1` | `dac44e8` | Waybar, Fuzzel, Mako and solid swaybg background |
-| 11 | `post-install-11-v1` | `63daf48` | swaylock and swayidle lifecycle |
-| 13 | `post-install-13-v1` | `4bcd8cd` | Portable daily-driver Niri and Kitty configuration |
-| 15 | `post-install-15-v1` | `0e66f44` | Midnight Circuit visual foundation |
+| 11 | `post-install-11-v2` | `post-install-11-v1` | swaylock and swayidle lifecycle, with valid swaylock options |
+| 13 | `post-install-13-v2` | `post-install-13-v1` | Portable daily-driver Niri and Kitty configuration, with the locker correction |
+| 15 | `post-install-15-v2` | `post-install-15-v1` | Midnight Circuit visual foundation, with the locker correction |
+
+The published `v1` tags remain immutable historical checkpoints. Chapters 11,
+13, and 15 use `v2` because their original swaylock configuration contained a
+standalone `indicator` line. swaylock reads configuration keys as long-option
+names; current swaylock has several `indicator-*` options but no unambiguous
+standalone `--indicator`. The unlock indicator is already enabled by default,
+so the corrected checkpoints remove that line while retaining the radius,
+thickness, colours, and failed-attempt display.
 
 The tags are deliberately detached checkpoints. Switching from one to the next
 updates the tracked targets behind existing Stow links without pretending that
@@ -78,7 +86,7 @@ working tree must be clean. Fetch and select a checkpoint with:
 ```bash
 git status --short --branch
 git fetch --prune --tags origin
-git switch --detach post-install-10-v1
+git switch --detach post-install-11-v2
 git describe --tags --exact-match
 git log -1 --oneline
 ```
@@ -134,7 +142,9 @@ Chapter 11 adds swaylock as a separate Stow package and starts swayidle from
 Niri with explicit lifecycle commands. swayidle owns no credentials and does
 not suspend on a timer; it coordinates lock, monitor power, and the
 `before-sleep` event. greetd and tuigreet remain machine-level configuration in
-the post-install repository.
+the post-install repository. Each non-empty swaylock configuration key must be
+a supported long-option name; the visible unlock indicator needs no standalone
+`indicator` key because it is enabled by default.
 
 Chapter 13 replaces the Niri bootstrap behavior with the complete portable
 daily-driver bindings and adds Kitty as an independent package. Output modes,
