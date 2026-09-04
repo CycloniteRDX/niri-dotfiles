@@ -11,7 +11,9 @@ daemon, wallpaper location, screen-locker configuration, idle lifecycle, and
 Kitty terminal configuration. It also contains the portable Midnight Circuit
 visual foundation: a project-owned wallpaper, one shared dark palette, GTK
 preferences, Papirus icons, and the Breeze cursor theme.
-Host-specific output settings remain intentionally unfinished.
+This baseline passed the complete post-install validation on the first target
+ThinkPad on 2026-09-04. Host-specific output settings, Qt theming, automatic
+idle suspend, and later modular polish remain intentionally unfinished.
 
 ## Scope
 

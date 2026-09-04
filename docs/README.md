@@ -233,8 +233,8 @@ outside the active path; they are never overwritten blindly.
 
 ## Decisions still required
 
-- Graphical greeter evolution beyond the system-level tuigreet baseline.
 - Host override strategy for the two ThinkPads.
+- Qt theme configuration and its boundary with the existing GTK package.
 
 Each decision should be made in the post-install project before its
 configuration is added here.
