@@ -13,9 +13,10 @@ visual foundation: a project-owned wallpaper, one shared dark palette, GTK
 preferences, Papirus icons, the Breeze cursor theme, and a matching Qt 6
 widget palette through qt6ct and Fusion.
 The underlying baseline passed the complete post-install validation on the
-first target ThinkPad on 2026-09-04. This Qt 6 extension still requires its own
-hardware validation. Host-specific output settings, automatic idle suspend,
-and later modular polish remain intentionally unfinished.
+first target ThinkPad on 2026-09-04, and the Qt 6 extension passed its own
+hardware validation on 2026-09-05. The new battery-only automatic-suspend
+extension awaits hardware validation. Host-specific output settings and later
+modular polish remain intentionally unfinished.
 
 ## Scope
 
@@ -97,6 +98,7 @@ theme/.config/gtk-3.0/settings.ini
 theme/.config/gtk-4.0/settings.ini
 qt6ct/.config/qt6ct/qt6ct.conf
 qt6ct/.config/qt6ct/colors/midnight-circuit.conf
+scripts/.local/bin/idle-suspend
 ```
 
 They provide:
@@ -114,6 +116,8 @@ They provide:
 - a compact status bar, launcher, and notification presentation.
 - immediate and idle-triggered locking, monitor power control, and pre-suspend
   lock coordination.
+- battery-only automatic suspend after 30 idle minutes, through a fail-closed
+  UPower helper that preserves systemd inhibitors;
 - complete portable Niri navigation, movement, sizing, workspace, floating, and
   tabbed-layout bindings;
 - a reproducible Midnight Circuit palette using Noto Sans and Noto Sans Mono;
@@ -123,7 +127,7 @@ They provide:
   Circuit palette through qt6ct.
 
 It deliberately does not configure outputs, scaling, Qt 5, Kvantum, a forced
-Qt platform backend, automatic idle suspend, hibernation, or automatic login.
+Qt platform backend, automatic suspend on AC, hibernation, or automatic login.
 The portable baseline currently sets the XKB layout to `us`; a future
 host-override design may replace that shared choice per machine. The qt6ct
 palette path contains the canonical account `/home/neon`; adapt that single
@@ -147,6 +151,32 @@ The visual foundation is deployed and verified in
 [chapter 15](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/15-visual-foundation.md).
 Qt 6 appearance is integrated separately in
 [chapter 17](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/17-qt6-appearance-integration.md).
+Battery-only automatic session suspend is added in
+[chapter 18](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/18-automatic-session-suspend.md).
+
+## Fresh installations after the desktop is stable
+
+The chapter tags are cumulative snapshots, not migrations that must be applied
+one after another. A later tag already contains the tracked state from its
+ancestors.
+
+- Use each chapter's exact `post-install-NN-vN` tag when learning, validating,
+  reproducing an old checkpoint, or locating a regression.
+- For a routine clean rebuild after the whole desktop is settled, complete the
+  corresponding system-package and service procedure, select the newest
+  hardware-validated dotfiles tag once, and deploy the required Stow packages.
+- Do not use an unqualified moving `main` as the unattended reinstall source.
+  `main` is appropriate for active development; a stable release tag records
+  the exact reviewed reconstruction point.
+
+Selecting the latest dotfiles tag does not install packages or system files.
+The matching post-install state is still required before its configuration is
+deployed.
+
+When the first fully personalized desktop is declared stable, publish a
+semantic dotfiles release tag as the ordinary reinstall target and record the
+matching post-install release beside it. Keep the numbered chapter tags for
+teaching, diagnosis, and historical reproduction.
 
 ## Deploy with GNU Stow
 
@@ -161,6 +191,7 @@ stow --simulate --verbose --no-folding --target="$HOME" swaylock
 stow --simulate --verbose --no-folding --target="$HOME" kitty
 stow --simulate --verbose --no-folding --target="$HOME" theme
 stow --simulate --verbose --no-folding --target="$HOME" qt6ct
+stow --simulate --verbose --no-folding --target="$HOME" scripts
 ```
 
 If the preview reports no conflict, deploy them:
@@ -174,6 +205,7 @@ stow --verbose --no-folding --target="$HOME" swaylock
 stow --verbose --no-folding --target="$HOME" kitty
 stow --verbose --no-folding --target="$HOME" theme
 stow --verbose --no-folding --target="$HOME" qt6ct
+stow --verbose --no-folding --target="$HOME" scripts
 niri validate
 ```
 
@@ -192,6 +224,7 @@ stow --delete --verbose --target="$HOME" swaylock
 stow --delete --verbose --target="$HOME" kitty
 stow --delete --verbose --target="$HOME" theme
 stow --delete --verbose --target="$HOME" qt6ct
+stow --delete --verbose --target="$HOME" scripts
 ```
 
 ## Related repositories

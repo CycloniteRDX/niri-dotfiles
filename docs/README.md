@@ -40,9 +40,9 @@ only when they contain reviewed files.
 | `kitty/` | Portable terminal behavior and palette without shell state or secrets. |
 | `theme/` | Portable GTK preferences; packages and GSettings remain system-integration concerns. |
 | `qt6ct/` | Qt 6 Fusion style, fonts, icons, portal dialogs, and Midnight Circuit palette. |
+| `scripts/` | Narrow reviewed helpers deployed below `~/.local/bin`; no service or privilege policy. |
 | Future component package | One independently deployable application or coherent configuration group. |
 | Future `hosts/` | Small, non-secret overrides for hardware-specific differences. |
-| Future `scripts/` | Narrow deployment or validation helpers, only when they reduce mistakes. |
 | Future `tests/` | Safe syntax and link checks that do not require a running graphical session. |
 
 Using separate Stow packages keeps deployment explicit. For example, adding a
@@ -71,6 +71,7 @@ chapter:
 | 13 | `post-install-13-v2` | `post-install-13-v1` | Portable daily-driver Niri and Kitty configuration, with the locker correction |
 | 15 | `post-install-15-v2` | `post-install-15-v1` | Midnight Circuit visual foundation, with the locker correction |
 | 17 | `post-install-17-v1` | — | Qt 6 appearance integration through qt6ct and Fusion |
+| 18 | `post-install-18-v1` | — | Battery-only automatic session suspend after 30 idle minutes |
 
 The published `v1` tags remain immutable historical checkpoints. Chapters 11,
 13, and 15 use `v2` because their original swaylock configuration contained a
@@ -98,6 +99,29 @@ merge an older checkpoint into a newer commit: because the older commit is
 already an ancestor, that operation correctly leaves the newer checkout in
 place. `git switch --detach TAG` is the intentional operation for reproducing
 an earlier stage.
+
+An annotated tag has two different strings. In:
+
+```bash
+git tag -a post-install-18-v1 \
+  -m "Post-install chapter 18 automatic session suspend"
+```
+
+`post-install-18-v1` is the Git reference used by `git switch`; the quoted text
+is only its human-readable annotation. Spaces are not valid in the reference
+name. Inspect both without confusing them:
+
+```bash
+git tag --list 'post-install-18-v1'
+git tag -n1 'post-install-18-v1'
+```
+
+The checkpoints are cumulative. When following the guide as a learning and
+validation exercise, switch tag by tag. For an ordinary clean rebuild after
+the design is stable, select the newest hardware-validated tag once after its
+matching post-install dependencies exist; do not replay every earlier tag.
+At the final desktop milestone, a semantic release tag can become the simple
+reinstall target while the chapter tags remain immutable diagnostic history.
 
 After a switch, run the chapter's `stow --restow` command for packages whose
 tracked files changed and validate Niri before leaving the working session.
@@ -167,6 +191,13 @@ Fusion, Papirus Dark, Noto fonts, the XDG Desktop Portal dialog provider, and a
 custom Midnight Circuit palette. Its absolute color-scheme path assumes the
 canonical `neon` account on both supported ThinkPads.
 
+Chapter 18 creates the first reviewed `scripts` package. Its
+`idle-suspend` helper reads UPower's boolean `OnBattery` property and does
+nothing when the power state is external or unknown. Niri's existing swayidle
+process calls it at 30 idle minutes. The helper requests suspend through
+systemd with inhibitor checking enabled; it does not use `sudo`, change a TLP
+profile, write sysfs, or create another idle daemon.
+
 ## Deployment lifecycle
 
 All deployment operations run from the repository root:
@@ -188,6 +219,8 @@ stow --simulate --verbose --no-folding --target="$HOME" theme
 stow --verbose --no-folding --target="$HOME" theme
 stow --simulate --verbose --no-folding --target="$HOME" qt6ct
 stow --verbose --no-folding --target="$HOME" qt6ct
+stow --simulate --verbose --no-folding --target="$HOME" scripts
+stow --verbose --no-folding --target="$HOME" scripts
 niri validate
 ```
 
@@ -202,6 +235,7 @@ stow --restow --verbose --no-folding --target="$HOME" swaylock
 stow --restow --verbose --no-folding --target="$HOME" kitty
 stow --restow --verbose --no-folding --target="$HOME" theme
 stow --restow --verbose --no-folding --target="$HOME" qt6ct
+stow --restow --verbose --no-folding --target="$HOME" scripts
 niri validate
 ```
 
@@ -216,6 +250,7 @@ stow --delete --verbose --target="$HOME" swaylock
 stow --delete --verbose --target="$HOME" kitty
 stow --delete --verbose --target="$HOME" theme
 stow --delete --verbose --target="$HOME" qt6ct
+stow --delete --verbose --target="$HOME" scripts
 ```
 
 Stow must stop on a conflict. Existing targets are reviewed and backed up
@@ -236,7 +271,7 @@ outside the active path; they are never overwritten blindly.
 | Wallpaper | swaybg with the project-owned `midnight-circuit.svg` and a dark solid fallback. |
 | Screenshots | Niri's built-in actions. |
 | Screen lock | swaylock with PAM authentication. |
-| Idle lifecycle | swayidle: lock at 5 min, monitors off at 10 min, lock before sleep. |
+| Idle lifecycle | swayidle: lock at 5 min, monitors off at 10 min, battery-only suspend at 30 min, lock before sleep. |
 | Niri daily-driver controls | Portable focus, movement, workspaces, sizing, floating, tabs, screenshots, and hardware keys. |
 | Visual palette | Midnight Circuit: dark navy and graphite, cyan primary accent, restrained fuchsia secondary accent. |
 | GTK | `adw-gtk3-dark` for GTK 3 and the standard dark preference for GTK 4/libadwaita. |

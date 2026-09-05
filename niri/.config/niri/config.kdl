@@ -63,7 +63,7 @@ spawn-at-startup "/usr/lib/mate-polkit/polkit-mate-authentication-agent-1"
 spawn-at-startup "waybar"
 spawn-at-startup "mako"
 spawn-sh-at-startup "wallpaper=\"$HOME/.local/share/wallpapers/midnight-circuit.svg\"; if [ -r \"$wallpaper\" ]; then exec swaybg -i \"$wallpaper\" -m fill -c '#0b0f17'; else exec swaybg -c '#0b0f17'; fi"
-spawn-at-startup "swayidle" "-w" "timeout" "300" "swaylock -f" "timeout" "600" "niri msg action power-off-monitors" "resume" "niri msg action power-on-monitors" "before-sleep" "swaylock -f" "lock" "swaylock -f"
+spawn-at-startup "swayidle" "-w" "timeout" "300" "swaylock -f" "timeout" "600" "niri msg action power-off-monitors" "resume" "niri msg action power-on-monitors" "timeout" "1800" "$HOME/.local/bin/idle-suspend" "before-sleep" "swaylock -f" "lock" "swaylock -f"
 
 window-rule {
     match app-id=r#"firefox$"# title="^Picture-in-Picture$"

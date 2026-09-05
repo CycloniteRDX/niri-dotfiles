@@ -1,0 +1,50 @@
+#!/bin/sh
+
+# Request automatic suspend only when UPower reports that the laptop is
+# currently running on battery. Unknown state fails closed: stay awake.
+
+set -u
+
+log_message() {
+    printf '%s\n' "$*" >&2
+    printf '%s\n' "$*" | systemd-cat --identifier=idle-suspend 2>/dev/null || true
+}
+
+power_state=$(busctl --system get-property \
+    org.freedesktop.UPower \
+    /org/freedesktop/UPower \
+    org.freedesktop.UPower \
+    OnBattery 2>/dev/null) || {
+    log_message "Skipped automatic suspend: UPower state is unavailable."
+    exit 0
+}
+
+case $power_state in
+    "b true")
+        ;;
+    "b false")
+        log_message "Skipped automatic suspend: external power is connected."
+        exit 0
+        ;;
+    *)
+        log_message "Skipped automatic suspend: unexpected UPower value: $power_state"
+        exit 0
+        ;;
+esac
+
+if [ "${IDLE_SUSPEND_DRY_RUN:-0}" = "1" ]; then
+    log_message "Dry run: battery detected; suspend would be requested."
+    exit 0
+fi
+
+log_message "Battery detected after 30 idle minutes; requesting suspend."
+systemctl --check-inhibitors=yes suspend
+request_status=$?
+
+if [ "$request_status" -ne 0 ]; then
+    log_message "Automatic suspend was refused (exit $request_status); an inhibitor or authorization boundary may be active."
+fi
+
+# A refused automatic request is a safe skip, not a reason for swayidle to
+# enter a restart loop or bypass an inhibitor.
+exit 0
