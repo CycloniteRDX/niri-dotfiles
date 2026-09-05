@@ -39,6 +39,7 @@ only when they contain reviewed files.
 | `swaylock/` | Portable lock-screen appearance; authentication remains PAM-owned. |
 | `kitty/` | Portable terminal behavior and palette without shell state or secrets. |
 | `theme/` | Portable GTK preferences; packages and GSettings remain system-integration concerns. |
+| `qt6ct/` | Qt 6 Fusion style, fonts, icons, portal dialogs, and Midnight Circuit palette. |
 | Future component package | One independently deployable application or coherent configuration group. |
 | Future `hosts/` | Small, non-secret overrides for hardware-specific differences. |
 | Future `scripts/` | Narrow deployment or validation helpers, only when they reduce mistakes. |
@@ -69,6 +70,7 @@ chapter:
 | 11 | `post-install-11-v2` | `post-install-11-v1` | swaylock and swayidle lifecycle, with valid swaylock options |
 | 13 | `post-install-13-v2` | `post-install-13-v1` | Portable daily-driver Niri and Kitty configuration, with the locker correction |
 | 15 | `post-install-15-v2` | `post-install-15-v1` | Midnight Circuit visual foundation, with the locker correction |
+| 17 | `post-install-17-v1` | — | Qt 6 appearance integration through qt6ct and Fusion |
 
 The published `v1` tags remain immutable historical checkpoints. Chapters 11,
 13, and 15 use `v2` because their original swaylock configuration contained a
@@ -157,6 +159,14 @@ project-authored SVG wallpaper. Niri owns cursor environment propagation and
 the wallpaper fallback; the post-install repository owns the corresponding
 official Arch packages and GSettings integration.
 
+Chapter 17 adds qt6ct as an independent package for Qt 6 only. Niri exports
+`QT_QPA_PLATFORMTHEME=qt6ct` to the applications it starts, but does not force
+`QT_QPA_PLATFORM`; Qt can therefore select native Wayland when supported and
+retain XWayland fallback where required. The tracked qt6ct configuration uses
+Fusion, Papirus Dark, Noto fonts, the XDG Desktop Portal dialog provider, and a
+custom Midnight Circuit palette. Its absolute color-scheme path assumes the
+canonical `neon` account on both supported ThinkPads.
+
 ## Deployment lifecycle
 
 All deployment operations run from the repository root:
@@ -176,6 +186,8 @@ stow --simulate --verbose --no-folding --target="$HOME" kitty
 stow --verbose --no-folding --target="$HOME" kitty
 stow --simulate --verbose --no-folding --target="$HOME" theme
 stow --verbose --no-folding --target="$HOME" theme
+stow --simulate --verbose --no-folding --target="$HOME" qt6ct
+stow --verbose --no-folding --target="$HOME" qt6ct
 niri validate
 ```
 
@@ -189,6 +201,7 @@ stow --restow --verbose --no-folding --target="$HOME" waybar fuzzel mako wallpap
 stow --restow --verbose --no-folding --target="$HOME" swaylock
 stow --restow --verbose --no-folding --target="$HOME" kitty
 stow --restow --verbose --no-folding --target="$HOME" theme
+stow --restow --verbose --no-folding --target="$HOME" qt6ct
 niri validate
 ```
 
@@ -202,6 +215,7 @@ stow --delete --verbose --target="$HOME" waybar fuzzel mako wallpapers
 stow --delete --verbose --target="$HOME" swaylock
 stow --delete --verbose --target="$HOME" kitty
 stow --delete --verbose --target="$HOME" theme
+stow --delete --verbose --target="$HOME" qt6ct
 ```
 
 Stow must stop on a conflict. Existing targets are reviewed and backed up
@@ -226,6 +240,7 @@ outside the active path; they are never overwritten blindly.
 | Niri daily-driver controls | Portable focus, movement, workspaces, sizing, floating, tabs, screenshots, and hardware keys. |
 | Visual palette | Midnight Circuit: dark navy and graphite, cyan primary accent, restrained fuchsia secondary accent. |
 | GTK | `adw-gtk3-dark` for GTK 3 and the standard dark preference for GTK 4/libadwaita. |
+| Qt 6 | qt6ct with Fusion, the Midnight Circuit palette, Papirus Dark, Noto fonts, and portal-backed standard dialogs. |
 | Icons | Papirus Dark. |
 | Cursor | `breeze_cursors`, 24 px, exported by Niri for the Wayland session. |
 | Kitty | Noto Sans Mono with the shared opaque Midnight Circuit palette. |
@@ -234,7 +249,6 @@ outside the active path; they are never overwritten blindly.
 ## Decisions still required
 
 - Host override strategy for the two ThinkPads.
-- Qt theme configuration and its boundary with the existing GTK package.
 
 Each decision should be made in the post-install project before its
 configuration is added here.

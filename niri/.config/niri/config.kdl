@@ -18,6 +18,12 @@ cursor {
     xcursor-size 24
 }
 
+// qt6ct owns Qt 6 appearance for applications launched by this Niri session.
+// Qt keeps selecting its Wayland or X11 platform plugin automatically.
+environment {
+    QT_QPA_PLATFORMTHEME "qt6ct"
+}
+
 layout {
     gaps 12
     center-focused-column "on-overflow"

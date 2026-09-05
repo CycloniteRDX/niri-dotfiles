@@ -10,10 +10,12 @@ removable-media autostart, default-application map, bar, launcher, notification
 daemon, wallpaper location, screen-locker configuration, idle lifecycle, and
 Kitty terminal configuration. It also contains the portable Midnight Circuit
 visual foundation: a project-owned wallpaper, one shared dark palette, GTK
-preferences, Papirus icons, and the Breeze cursor theme.
-This baseline passed the complete post-install validation on the first target
-ThinkPad on 2026-09-04. Host-specific output settings, Qt theming, automatic
-idle suspend, and later modular polish remain intentionally unfinished.
+preferences, Papirus icons, the Breeze cursor theme, and a matching Qt 6
+widget palette through qt6ct and Fusion.
+The underlying baseline passed the complete post-install validation on the
+first target ThinkPad on 2026-09-04. This Qt 6 extension still requires its own
+hardware validation. Host-specific output settings, automatic idle suspend,
+and later modular polish remain intentionally unfinished.
 
 ## Scope
 
@@ -93,6 +95,8 @@ swaylock/.config/swaylock/config
 kitty/.config/kitty/kitty.conf
 theme/.config/gtk-3.0/settings.ini
 theme/.config/gtk-4.0/settings.ini
+qt6ct/.config/qt6ct/qt6ct.conf
+qt6ct/.config/qt6ct/colors/midnight-circuit.conf
 ```
 
 They provide:
@@ -114,13 +118,18 @@ They provide:
   tabbed-layout bindings;
 - a reproducible Midnight Circuit palette using Noto Sans and Noto Sans Mono;
 - a project-owned SVG wallpaper with a solid-colour fallback;
-- dark GTK preferences, Papirus Dark icons, and the Breeze cursor theme.
+- dark GTK preferences, Papirus Dark icons, and the Breeze cursor theme;
+- Qt 6 widget fonts, icons, dialogs, Fusion style, and a custom Midnight
+  Circuit palette through qt6ct.
 
-It deliberately does not configure outputs, scaling, Qt theme overrides,
-automatic idle suspend, hibernation, or automatic login. The portable baseline
-currently sets the XKB layout to `us`; a future host-override design may replace
-that shared choice per machine. greetd and tuigreet are system configuration
-documented outside this user-level repository.
+It deliberately does not configure outputs, scaling, Qt 5, Kvantum, a forced
+Qt platform backend, automatic idle suspend, hibernation, or automatic login.
+The portable baseline currently sets the XKB layout to `us`; a future
+host-override design may replace that shared choice per machine. The qt6ct
+palette path contains the canonical account `/home/neon`; adapt that single
+line before deployment if the repository is reused under another user. greetd
+and tuigreet are system configuration documented outside this user-level
+repository.
 
 Package installation and the complete deployment procedure are documented in
 [chapter 05 of Arch Linux Post-install](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/05-minimal-graphical-bootstrap.md).
@@ -136,6 +145,8 @@ The portable daily-driver handoff and Kitty package are completed in
 [chapter 13](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/13-full-dotfiles-handoff.md).
 The visual foundation is deployed and verified in
 [chapter 15](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/15-visual-foundation.md).
+Qt 6 appearance is integrated separately in
+[chapter 17](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/17-qt6-appearance-integration.md).
 
 ## Deploy with GNU Stow
 
@@ -149,6 +160,7 @@ stow --simulate --verbose --no-folding --target="$HOME" waybar fuzzel mako wallp
 stow --simulate --verbose --no-folding --target="$HOME" swaylock
 stow --simulate --verbose --no-folding --target="$HOME" kitty
 stow --simulate --verbose --no-folding --target="$HOME" theme
+stow --simulate --verbose --no-folding --target="$HOME" qt6ct
 ```
 
 If the preview reports no conflict, deploy them:
@@ -161,6 +173,7 @@ stow --verbose --no-folding --target="$HOME" waybar fuzzel mako wallpapers
 stow --verbose --no-folding --target="$HOME" swaylock
 stow --verbose --no-folding --target="$HOME" kitty
 stow --verbose --no-folding --target="$HOME" theme
+stow --verbose --no-folding --target="$HOME" qt6ct
 niri validate
 ```
 
@@ -178,6 +191,7 @@ stow --delete --verbose --target="$HOME" waybar fuzzel mako wallpapers
 stow --delete --verbose --target="$HOME" swaylock
 stow --delete --verbose --target="$HOME" kitty
 stow --delete --verbose --target="$HOME" theme
+stow --delete --verbose --target="$HOME" qt6ct
 ```
 
 ## Related repositories
