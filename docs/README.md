@@ -71,15 +71,20 @@ chapter:
 | 13 | `post-install-13-v2` | `post-install-13-v1` | Portable daily-driver Niri and Kitty configuration, with the locker correction |
 | 15 | `post-install-15-v2` | `post-install-15-v1` | Midnight Circuit visual foundation, with the locker correction |
 | 17 | `post-install-17-v1` | — | Qt 6 appearance integration through qt6ct and Fusion |
-| 18 | `post-install-18-v1` | — | Battery-only automatic session suspend after 30 idle minutes |
+| 18 | `post-install-18-v2` | `post-install-18-v1` | Battery-only automatic session suspend after 30 idle minutes, with an executable helper |
 
-The published `v1` tags remain immutable historical checkpoints. Chapters 11,
-13, and 15 use `v2` because their original swaylock configuration contained a
+The published earlier tags remain immutable historical checkpoints. Chapters
+11, 13, and 15 use `v2` because their original swaylock configuration contained a
 standalone `indicator` line. swaylock reads configuration keys as long-option
 names; current swaylock has several `indicator-*` options but no unambiguous
 standalone `--indicator`. The unlock indicator is already enabled by default,
 so the corrected checkpoints remove that line while retaining the radius,
 thickness, colours, and failed-attempt display.
+
+Chapter 18 uses `v2` because `post-install-18-v1` tracked
+`scripts/.local/bin/idle-suspend` as a non-executable file. The script content
+was correct, but swayidle could not invoke it directly. The corrected tag
+records Git mode `100755`; a local `chmod +x` alone is not a published fix.
 
 The tags are deliberately detached checkpoints. Switching from one to the next
 updates the tracked targets behind existing Stow links without pretending that
@@ -103,17 +108,17 @@ an earlier stage.
 An annotated tag has two different strings. In:
 
 ```bash
-git tag -a post-install-18-v1 \
-  -m "Post-install chapter 18 automatic session suspend"
+git tag -a post-install-18-v2 \
+  -m "Post-install chapter 18 automatic session suspend (executable fix)"
 ```
 
-`post-install-18-v1` is the Git reference used by `git switch`; the quoted text
+`post-install-18-v2` is the Git reference used by `git switch`; the quoted text
 is only its human-readable annotation. Spaces are not valid in the reference
 name. Inspect both without confusing them:
 
 ```bash
-git tag --list 'post-install-18-v1'
-git tag -n1 'post-install-18-v1'
+git tag --list 'post-install-18-v2'
+git tag -n1 'post-install-18-v2'
 ```
 
 The checkpoints are cumulative. When following the guide as a learning and
@@ -196,7 +201,17 @@ Chapter 18 creates the first reviewed `scripts` package. Its
 nothing when the power state is external or unknown. Niri's existing swayidle
 process calls it at 30 idle minutes. The helper requests suspend through
 systemd with inhibitor checking enabled; it does not use `sudo`, change a TLP
-profile, write sysfs, or create another idle daemon.
+profile, write sysfs, or create another idle daemon. Git must track the helper
+as mode `100755`. This is especially important when preparing the commit from
+Windows, where extracting a ZIP does not reliably reproduce Unix mode bits:
+
+```bash
+git add --chmod=+x scripts/.local/bin/idle-suspend
+git ls-files --stage scripts/.local/bin/idle-suspend
+```
+
+The first field of the second command must be `100755` before the corrected
+checkpoint is committed and tagged.
 
 ## Deployment lifecycle
 
@@ -221,6 +236,7 @@ stow --simulate --verbose --no-folding --target="$HOME" qt6ct
 stow --verbose --no-folding --target="$HOME" qt6ct
 stow --simulate --verbose --no-folding --target="$HOME" scripts
 stow --verbose --no-folding --target="$HOME" scripts
+test -x "$HOME/.local/bin/idle-suspend"
 niri validate
 ```
 

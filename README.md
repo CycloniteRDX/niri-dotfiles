@@ -14,9 +14,10 @@ preferences, Papirus icons, the Breeze cursor theme, and a matching Qt 6
 widget palette through qt6ct and Fusion.
 The underlying baseline passed the complete post-install validation on the
 first target ThinkPad on 2026-09-04, and the Qt 6 extension passed its own
-hardware validation on 2026-09-05. The new battery-only automatic-suspend
-extension awaits hardware validation. Host-specific output settings and later
-modular polish remain intentionally unfinished.
+hardware validation on 2026-09-05. The battery-only automatic-suspend
+extension also passed hardware validation on 2026-09-05 after its helper's
+executable bit was corrected in `post-install-18-v2`. Host-specific output
+settings and later modular polish remain intentionally unfinished.
 
 ## Scope
 
@@ -206,6 +207,7 @@ stow --verbose --no-folding --target="$HOME" kitty
 stow --verbose --no-folding --target="$HOME" theme
 stow --verbose --no-folding --target="$HOME" qt6ct
 stow --verbose --no-folding --target="$HOME" scripts
+test -x "$HOME/.local/bin/idle-suspend"
 niri validate
 ```
 
