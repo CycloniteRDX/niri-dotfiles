@@ -1,140 +1,639 @@
-// Portable daily-driver configuration for the two ThinkPad installations.
-// Output modes and scale remain automatic until measured on each machine.
+// Niri daily-driver configuration.
+//
+// Design goals:
+// - ergonomic keyboard-driven workflow
+// - US keyboard with Compose support
+// - Vim-style HJKL navigation
+// - scrollable tiling with compact spacing
+// - cyan/magenta visual language shared with Waybar
+// - conservative defaults where tuning is not yet necessary
+//
+// Output configuration and pointer sensitivity are intentionally left
+// for a second hardware-specific tuning pass.
 
 input {
     keyboard {
-        xkb { layout "us"; }
+        xkb {
+            layout "us"
+            options "compose:ralt,ctrl:nocaps"
+        }
+
         repeat-delay 300
         repeat-rate 25
     }
+
     touchpad {
         tap
         dwt
+        dwtp
+
+        drag true
+
+        natural-scroll
+
+        // Slightly slower than libinput's default.
+        scroll-factor 0.75
+
+        // 1 finger = left click
+        // 2 fingers = right click
+        // 3 fingers = middle click
+        tap-button-map "left-right-middle"
     }
+
+    // Mouse and TrackPoint keep libinput defaults for now.
+    // Pointer sensitivity will be tuned in a second pass.
+
+    warp-mouse-to-focus
+    focus-follows-mouse max-scroll-amount="10%"
+
+    workspace-auto-back-and-forth
 }
+
+
+// Output configuration is intentionally omitted for now.
+// Niri will select the appropriate mode, refresh rate and scale automatically.
+// We will tune the internal panel and external-monitor behavior separately.
+
 
 cursor {
     xcursor-theme "breeze_cursors"
     xcursor-size 24
 }
 
+
 // qt6ct owns Qt 6 appearance for applications launched by this Niri session.
-// Qt keeps selecting its Wayland or X11 platform plugin automatically.
 environment {
     QT_QPA_PLATFORMTHEME "qt6ct"
 }
 
+
 layout {
-    gaps 12
+    gaps 10
+
     center-focused-column "on-overflow"
+
     preset-column-widths {
         proportion 0.33333
         proportion 0.5
         proportion 0.66667
     }
+
     preset-window-heights {
         proportion 0.33333
         proportion 0.5
         proportion 0.66667
     }
-    default-column-width { proportion 0.5; }
+
+    default-column-width {
+        proportion 0.5
+    }
+
     focus-ring {
-        width 3
+        width 2
+
         active-gradient from="#5ce1e6" to="#f05adf" angle=45
         inactive-color "#2a3a50"
     }
-    border { off; }
+
+    border {
+        off
+    }
+
     shadow {
         on
+
         softness 24
-        spread 2
-        offset x=0 y=4
-        color "#00000080"
+        spread 1
+        offset x=0 y=3
+
+        color "#00000066"
     }
 }
 
+
+// Dark overview matching the rest of the desktop.
 overview {
     backdrop-color "#070a10"
 }
 
+
+// Alt-Tab style recent-window switcher.
+recent-windows {
+    debounce-ms 750
+    open-delay-ms 150
+
+    highlight {
+        active-color "#5ce1e640"
+        urgent-color "#f05adf66"
+
+        padding 20
+        corner-radius 10
+    }
+
+    previews {
+        max-height 420
+        max-scale 0.5
+    }
+
+    binds {
+        Alt+Tab {
+            next-window;
+        }
+
+        Alt+Shift+Tab {
+            previous-window;
+        }
+
+        Alt+grave {
+            next-window filter="app-id";
+        }
+
+        Alt+Shift+grave {
+            previous-window filter="app-id";
+        }
+    }
+}
+
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+
+// Ask compatible applications to avoid their own client-side decorations.
+prefer-no-csd
+
+
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
-spawn-at-startup "/usr/lib/mate-polkit/polkit-mate-authentication-agent-1"
-spawn-at-startup "waybar"
-spawn-at-startup "mako"
-spawn-sh-at-startup "wallpaper=\"$HOME/.local/share/wallpapers/midnight-circuit.svg\"; if [ -r \"$wallpaper\" ]; then exec swaybg -i \"$wallpaper\" -m fill -c '#0b0f17'; else exec swaybg -c '#0b0f17'; fi"
-spawn-at-startup "swayidle" "-w" "timeout" "300" "swaylock -f" "timeout" "600" "niri msg action power-off-monitors" "resume" "niri msg action power-on-monitors" "timeout" "1800" "$HOME/.local/bin/idle-suspend" "before-sleep" "swaylock -f" "lock" "swaylock -f"
 
+// Keep Niri's default animation timings for this first pass.
+animations {
+}
+
+
+// Session components.
+spawn-at-startup "/usr/lib/mate-polkit/polkit-mate-authentication-agent-1"
+
+spawn-at-startup "waybar"
+
+spawn-at-startup "mako"
+
+spawn-sh-at-startup "wallpaper=\"$HOME/.local/share/wallpapers/midnight-circuit.svg\"; if [ -r \"$wallpaper\" ]; then exec swaybg -i \"$wallpaper\" -m fill -c '#0b0f17'; else exec swaybg -c '#0b0f17'; fi"
+
+spawn-at-startup "swayidle" "-w" \
+    "timeout" "300" "swaylock -f" \
+    "timeout" "600" "niri msg action power-off-monitors" \
+    "resume" "niri msg action power-on-monitors" \
+    "timeout" "1800" "$HOME/.local/bin/idle-suspend" \
+    "before-sleep" "swaylock -f" \
+    "lock" "swaylock -f"
+
+
+// Round and physically clip regular windows.
+window-rule {
+    geometry-corner-radius 8
+    clip-to-geometry true
+}
+
+
+// Firefox Picture-in-Picture works better floating.
 window-rule {
     match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+
     open-floating true
 }
 
+
 binds {
-    Mod+Shift+Slash hotkey-overlay-title="Show important shortcuts" { show-hotkey-overlay; }
-    Mod+Return hotkey-overlay-title="Open Kitty" { spawn "kitty"; }
-    Mod+D hotkey-overlay-title="Open application launcher" { spawn "fuzzel"; }
-    Mod+O repeat=false hotkey-overlay-title="Toggle overview" { toggle-overview; }
-    Mod+Q repeat=false hotkey-overlay-title="Close window" { close-window; }
-    Super+Alt+L allow-inhibiting=false hotkey-overlay-title="Lock screen" { spawn "swaylock" "-f"; }
+    // -----------------------------------------------------------------
+    // Core
+    // -----------------------------------------------------------------
 
-    Mod+Left  { focus-column-left; }
-    Mod+Down  { focus-window-down; }
-    Mod+Up    { focus-window-up; }
-    Mod+Right { focus-column-right; }
-    Mod+H { focus-column-left; }
-    Mod+J { focus-window-down; }
-    Mod+K { focus-window-up; }
-    Mod+L { focus-column-right; }
+    Mod+Shift+Slash hotkey-overlay-title="Show shortcuts" {
+        show-hotkey-overlay;
+    }
 
-    Mod+Ctrl+Left  { move-column-left; }
-    Mod+Ctrl+Down  { move-window-down; }
-    Mod+Ctrl+Up    { move-window-up; }
-    Mod+Ctrl+Right { move-column-right; }
-    Mod+Ctrl+H { move-column-left; }
-    Mod+Ctrl+J { move-window-down; }
-    Mod+Ctrl+K { move-window-up; }
-    Mod+Ctrl+L { move-column-right; }
+    Mod+T hotkey-overlay-title="Open Kitty" {
+        spawn "kitty";
+    }
 
-    Mod+Home { focus-column-first; }
-    Mod+End  { focus-column-last; }
-    Mod+Ctrl+Home { move-column-to-first; }
-    Mod+Ctrl+End  { move-column-to-last; }
+    // Familiar secondary terminal shortcut.
+    Mod+Return hotkey-overlay-title=null {
+        spawn "kitty";
+    }
 
-    Mod+Page_Down { focus-workspace-down; }
-    Mod+Page_Up   { focus-workspace-up; }
-    Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
-    Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
-    Mod+Shift+Page_Down { move-workspace-down; }
-    Mod+Shift+Page_Up   { move-workspace-up; }
-    Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
-    Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
-    Mod+Shift+WheelScrollDown { focus-column-right; }
-    Mod+Shift+WheelScrollUp { focus-column-left; }
+    Mod+D hotkey-overlay-title="Open application launcher" {
+        spawn "fuzzel";
+    }
 
-    Mod+R { switch-preset-column-width; }
-    Mod+Shift+R { switch-preset-window-height; }
-    Mod+F { maximize-column; }
-    Mod+Shift+F { fullscreen-window; }
-    Mod+C { center-column; }
-    Mod+Minus { set-column-width "-10%"; }
-    Mod+Equal { set-column-width "+10%"; }
-    Mod+Shift+Minus { set-window-height "-10%"; }
-    Mod+Shift+Equal { set-window-height "+10%"; }
-    Mod+V { toggle-window-floating; }
-    Mod+Shift+V { switch-focus-between-floating-and-tiling; }
-    Mod+W { toggle-column-tabbed-display; }
+    Mod+O repeat=false hotkey-overlay-title="Toggle overview" {
+        toggle-overview;
+    }
 
-    Print hotkey-overlay-title="Take interactive screenshot" { screenshot; }
-    Ctrl+Print hotkey-overlay-title="Capture focused output" { screenshot-screen; }
-    Alt+Print hotkey-overlay-title="Capture focused window" { screenshot-window; }
+    Mod+Q repeat=false hotkey-overlay-title="Close window" {
+        close-window;
+    }
 
-    XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "-l" "1.0" "@DEFAULT_AUDIO_SINK@" "5%+"; }
-    XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
-    XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
-    XF86AudioMicMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
-    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "set" "+5%"; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "set" "5%-"; }
+    Mod+Shift+L allow-inhibiting=false hotkey-overlay-title="Lock screen" {
+        spawn "swaylock" "-f";
+    }
 
-    Mod+Shift+E hotkey-overlay-title="Exit Niri" { quit; }
+
+    // -----------------------------------------------------------------
+    // Focus navigation
+    //
+    //         K
+    //         ↑
+    //     H ←   → L
+    //         ↓
+    //         J
+    // -----------------------------------------------------------------
+
+    Mod+H {
+        focus-column-left;
+    }
+
+    Mod+J {
+        focus-window-down;
+    }
+
+    Mod+K {
+        focus-window-up;
+    }
+
+    Mod+L {
+        focus-column-right;
+    }
+
+    // Arrow-key aliases.
+    Mod+Left hotkey-overlay-title=null {
+        focus-column-left;
+    }
+
+    Mod+Down hotkey-overlay-title=null {
+        focus-window-down;
+    }
+
+    Mod+Up hotkey-overlay-title=null {
+        focus-window-up;
+    }
+
+    Mod+Right hotkey-overlay-title=null {
+        focus-column-right;
+    }
+
+
+    // -----------------------------------------------------------------
+    // Move windows / columns
+    //
+    // Alt means: move the content instead of only moving focus.
+    // -----------------------------------------------------------------
+
+    Mod+Alt+H {
+        move-column-left;
+    }
+
+    Mod+Alt+J {
+        move-window-down;
+    }
+
+    Mod+Alt+K {
+        move-window-up;
+    }
+
+    Mod+Alt+L {
+        move-column-right;
+    }
+
+    Mod+Alt+Left hotkey-overlay-title=null {
+        move-column-left;
+    }
+
+    Mod+Alt+Down hotkey-overlay-title=null {
+        move-window-down;
+    }
+
+    Mod+Alt+Up hotkey-overlay-title=null {
+        move-window-up;
+    }
+
+    Mod+Alt+Right hotkey-overlay-title=null {
+        move-column-right;
+    }
+
+
+    // First / last column.
+    Mod+Home {
+        focus-column-first;
+    }
+
+    Mod+End {
+        focus-column-last;
+    }
+
+    Mod+Alt+Home {
+        move-column-to-first;
+    }
+
+    Mod+Alt+End {
+        move-column-to-last;
+    }
+
+
+    // -----------------------------------------------------------------
+    // Workspace navigation
+    //
+    // Ctrl selects the vertical workspace layer.
+    // Caps Lock is mapped to Ctrl, making these easy to reach.
+    // -----------------------------------------------------------------
+
+    Mod+Ctrl+J {
+        focus-workspace-down;
+    }
+
+    Mod+Ctrl+K {
+        focus-workspace-up;
+    }
+
+    Mod+Ctrl+Down hotkey-overlay-title=null {
+        focus-workspace-down;
+    }
+
+    Mod+Ctrl+Up hotkey-overlay-title=null {
+        focus-workspace-up;
+    }
+
+
+    // Move the current column to another workspace.
+    Mod+Ctrl+Alt+J {
+        move-column-to-workspace-down;
+    }
+
+    Mod+Ctrl+Alt+K {
+        move-column-to-workspace-up;
+    }
+
+    Mod+Ctrl+Alt+Down hotkey-overlay-title=null {
+        move-column-to-workspace-down;
+    }
+
+    Mod+Ctrl+Alt+Up hotkey-overlay-title=null {
+        move-column-to-workspace-up;
+    }
+
+
+    // Reorder the workspaces themselves.
+    Mod+Shift+J {
+        move-workspace-down;
+    }
+
+    Mod+Shift+K {
+        move-workspace-up;
+    }
+
+
+    // Direct workspace access.
+    Mod+1 hotkey-overlay-title=null { focus-workspace 1; }
+    Mod+2 hotkey-overlay-title=null { focus-workspace 2; }
+    Mod+3 hotkey-overlay-title=null { focus-workspace 3; }
+    Mod+4 hotkey-overlay-title=null { focus-workspace 4; }
+    Mod+5 hotkey-overlay-title=null { focus-workspace 5; }
+    Mod+6 hotkey-overlay-title=null { focus-workspace 6; }
+    Mod+7 hotkey-overlay-title=null { focus-workspace 7; }
+    Mod+8 hotkey-overlay-title=null { focus-workspace 8; }
+    Mod+9 hotkey-overlay-title=null { focus-workspace 9; }
+
+    // Alt keeps the same "move content" meaning.
+    Mod+Alt+1 hotkey-overlay-title=null { move-column-to-workspace 1; }
+    Mod+Alt+2 hotkey-overlay-title=null { move-column-to-workspace 2; }
+    Mod+Alt+3 hotkey-overlay-title=null { move-column-to-workspace 3; }
+    Mod+Alt+4 hotkey-overlay-title=null { move-column-to-workspace 4; }
+    Mod+Alt+5 hotkey-overlay-title=null { move-column-to-workspace 5; }
+    Mod+Alt+6 hotkey-overlay-title=null { move-column-to-workspace 6; }
+    Mod+Alt+7 hotkey-overlay-title=null { move-column-to-workspace 7; }
+    Mod+Alt+8 hotkey-overlay-title=null { move-column-to-workspace 8; }
+    Mod+Alt+9 hotkey-overlay-title=null { move-column-to-workspace 9; }
+
+
+    // Mouse-wheel workspace navigation.
+    Mod+WheelScrollDown cooldown-ms=150 {
+        focus-workspace-down;
+    }
+
+    Mod+WheelScrollUp cooldown-ms=150 {
+        focus-workspace-up;
+    }
+
+
+    // -----------------------------------------------------------------
+    // Column and window sizing
+    // -----------------------------------------------------------------
+
+    // 1/3 -> 1/2 -> 2/3.
+    Mod+R {
+        switch-preset-column-width;
+    }
+
+    // Same cycle backwards.
+    Mod+Alt+R {
+        switch-preset-column-width-back;
+    }
+
+    // Cycle the vertical size when several windows share a column.
+    Mod+Ctrl+R {
+        switch-preset-window-height;
+    }
+
+
+    // Frequently used "maximize" operation:
+    // fill the workspace width while keeping Waybar/gaps.
+    Mod+F hotkey-overlay-title="Maximize column" {
+        maximize-column;
+    }
+
+    // True fullscreen.
+    Mod+Alt+F hotkey-overlay-title="Toggle fullscreen" {
+        fullscreen-window;
+    }
+
+    // Traditional maximize-to-screen-edges behavior.
+    Mod+M {
+        maximize-window-to-edges;
+    }
+
+    // Fill only the remaining free horizontal space.
+    Mod+Ctrl+F {
+        expand-column-to-available-width;
+    }
+
+
+    // Centering.
+    Mod+C {
+        center-column;
+    }
+
+    Mod+Alt+C {
+        center-visible-columns;
+    }
+
+
+    // Fine width control.
+    Mod+Minus {
+        set-column-width "-10%";
+    }
+
+    Mod+Equal {
+        set-column-width "+10%";
+    }
+
+
+    // Fine height control for vertically stacked windows.
+    Mod+Alt+Minus {
+        set-window-height "-10%";
+    }
+
+    Mod+Alt+Equal {
+        set-window-height "+10%";
+    }
+
+    Mod+Alt+0 {
+        reset-window-height;
+    }
+
+
+    // -----------------------------------------------------------------
+    // Column composition
+    // -----------------------------------------------------------------
+
+    Mod+BracketLeft {
+        consume-or-expel-window-left;
+    }
+
+    Mod+BracketRight {
+        consume-or-expel-window-right;
+    }
+
+    Mod+Comma {
+        consume-window-into-column;
+    }
+
+    Mod+Period {
+        expel-window-from-column;
+    }
+
+
+    // Tabbed column mode.
+    Mod+W {
+        toggle-column-tabbed-display;
+    }
+
+
+    // -----------------------------------------------------------------
+    // Floating
+    // -----------------------------------------------------------------
+
+    Mod+V {
+        toggle-window-floating;
+    }
+
+    Mod+Alt+V {
+        switch-focus-between-floating-and-tiling;
+    }
+
+
+    // -----------------------------------------------------------------
+    // Screenshots
+    // -----------------------------------------------------------------
+
+    Print hotkey-overlay-title="Take interactive screenshot" {
+        screenshot;
+    }
+
+    Ctrl+Print hotkey-overlay-title="Capture focused output" {
+        screenshot-screen;
+    }
+
+    Alt+Print hotkey-overlay-title="Capture focused window" {
+        screenshot-window;
+    }
+
+
+    // -----------------------------------------------------------------
+    // Audio
+    // -----------------------------------------------------------------
+
+    XF86AudioRaiseVolume allow-when-locked=true {
+        spawn "wpctl" "set-volume" "-l" "1.0" "@DEFAULT_AUDIO_SINK@" "5%+";
+    }
+
+    XF86AudioLowerVolume allow-when-locked=true {
+        spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-";
+    }
+
+    XF86AudioMute allow-when-locked=true {
+        spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle";
+    }
+
+    XF86AudioMicMute allow-when-locked=true {
+        spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle";
+    }
+
+
+    // -----------------------------------------------------------------
+    // Media
+    // -----------------------------------------------------------------
+
+    XF86AudioPlay allow-when-locked=true {
+        spawn "playerctl" "play-pause";
+    }
+
+    XF86AudioPause allow-when-locked=true {
+        spawn "playerctl" "play-pause";
+    }
+
+    XF86AudioStop allow-when-locked=true {
+        spawn "playerctl" "stop";
+    }
+
+    XF86AudioPrev allow-when-locked=true {
+        spawn "playerctl" "previous";
+    }
+
+    XF86AudioNext allow-when-locked=true {
+        spawn "playerctl" "next";
+    }
+
+
+    // -----------------------------------------------------------------
+    // Brightness
+    // -----------------------------------------------------------------
+
+    XF86MonBrightnessUp allow-when-locked=true {
+        spawn "brightnessctl" "set" "+5%";
+    }
+
+    XF86MonBrightnessDown allow-when-locked=true {
+        spawn "brightnessctl" "set" "5%-";
+    }
+
+
+    // -----------------------------------------------------------------
+    // Session / safety
+    // -----------------------------------------------------------------
+
+    // Escape hatch for applications that inhibit compositor shortcuts.
+    Mod+Escape allow-inhibiting=false {
+        toggle-keyboard-shortcuts-inhibit;
+    }
+
+    // Manually turn the display off.
+    Mod+Shift+P {
+        power-off-monitors;
+    }
+
+    // Niri asks for confirmation before quitting.
+    Mod+Shift+E hotkey-overlay-title="Exit Niri" {
+        quit;
+    }
 }
