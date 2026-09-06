@@ -17,7 +17,10 @@ first target ThinkPad on 2026-09-04, and the Qt 6 extension passed its own
 hardware validation on 2026-09-05. The battery-only automatic-suspend
 extension also passed hardware validation on 2026-09-05 after its helper's
 executable bit was corrected in `post-install-18-v2`. Host-specific output
-settings and later modular polish remain intentionally unfinished.
+settings remain intentionally unfinished. Chapter 21 now begins the advanced
+personalization series by refining the existing Waybar without changing its
+role or adding another shell component; this candidate awaits hardware
+validation before publication as `post-install-21-v1`.
 
 ## Scope
 
@@ -114,7 +117,8 @@ They provide:
   a tray icon of its own;
 - default handlers for web links, directories, documents, images, text, media,
   archives, calendar files, and office files;
-- a compact status bar, launcher, and notification presentation.
+- a compact three-island Midnight Circuit status bar, launcher, and
+  notification presentation;
 - immediate and idle-triggered locking, monitor power control, and pre-suspend
   lock coordination.
 - battery-only automatic suspend after 30 idle minutes, through a fail-closed
@@ -154,6 +158,8 @@ Qt 6 appearance is integrated separately in
 [chapter 17](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/17-qt6-appearance-integration.md).
 Battery-only automatic session suspend is added in
 [chapter 18](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/18-automatic-session-suspend.md).
+The first advanced personalization stage refines Waybar in
+[chapter 21](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/21-waybar-visual-refinement.md).
 
 ## Fresh installations after the desktop is stable
 

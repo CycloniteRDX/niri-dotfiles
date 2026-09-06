@@ -72,6 +72,7 @@ chapter:
 | 15 | `post-install-15-v2` | `post-install-15-v1` | Midnight Circuit visual foundation, with the locker correction |
 | 17 | `post-install-17-v1` | — | Qt 6 appearance integration through qt6ct and Fusion |
 | 18 | `post-install-18-v2` | `post-install-18-v1` | Battery-only automatic session suspend after 30 idle minutes, with an executable helper |
+| 21 | `post-install-21-v1` after hardware validation | — | Three-island Midnight Circuit Waybar refinement with the existing modules and owners |
 
 The published earlier tags remain immutable historical checkpoints. Chapters
 11, 13, and 15 use `v2` because their original swaylock configuration contained a
@@ -213,6 +214,15 @@ git ls-files --stage scripts/.local/bin/idle-suspend
 The first field of the second command must be `100755` before the corrected
 checkpoint is committed and tagged.
 
+Chapter 21 starts the advanced personalization series without replacing a
+component. Waybar keeps its Niri workspaces, window title, status modules, tray,
+and session action while its presentation becomes three floating Midnight
+Circuit islands. The chapter adds clock-to-calendar, right-click pavucontrol,
+and right-click lock actions using applications and owners already present in
+the validated system. `post-install-21-v1` remains a planned reference until
+the complete visual, interaction, reload, logout/login, and rollback matrix
+passes on hardware.
+
 ## Deployment lifecycle
 
 All deployment operations run from the repository root:
@@ -281,7 +291,7 @@ outside the active path; they are never overwritten blindly.
 | Niri configuration | Starts the reviewed chapter 10 session components. |
 | Removable-media autostart | udiskie through a portable XDG desktop entry. |
 | Default applications | Portable `mimeapps.list` deployed as an independent Stow package. |
-| Status bar | Waybar with native Niri modules. |
+| Status bar | Waybar with native Niri modules and the chapter 21 three-island Midnight Circuit presentation. |
 | Launcher | Fuzzel. |
 | Notifications | Mako. |
 | Wallpaper | swaybg with the project-owned `midnight-circuit.svg` and a dark solid fallback. |
@@ -296,6 +306,23 @@ outside the active path; they are never overwritten blindly.
 | Cursor | `breeze_cursors`, 24 px, exported by Niri for the Wayland session. |
 | Kitty | Noto Sans Mono with the shared opaque Midnight Circuit palette. |
 | Keyboard layout | Portable baseline sets `us`; per-host overrides remain deferred. |
+
+## Current personalization order
+
+1. Waybar.
+2. Fuzzel.
+3. Mako.
+4. swaylock.
+5. swaybg and wallpaper presentation.
+6. Niri window, overview, and motion details.
+7. Kitty plus GTK and Qt consistency.
+8. tuigreet.
+9. Plymouth.
+10. Cross-component validation and a stable dotfiles release.
+
+The first pass keeps every current component. SwayNotificationCenter, another
+wallpaper renderer, Eww, or any other replacement is evaluated only after the
+complete current stack is visually coherent and hardware-validated.
 
 ## Decisions still required
 

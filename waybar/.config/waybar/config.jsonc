@@ -1,8 +1,14 @@
 {
     "layer": "top",
     "position": "top",
-    "height": 32,
-    "spacing": 8,
+    "height": 38,
+    "margin-top": 8,
+    "margin-left": 10,
+    "margin-right": 10,
+    "spacing": 2,
+    "reload_style_on_change": true,
+    "on-sigusr1": "toggle",
+    "on-sigusr2": "reload",
 
     "modules-left": ["niri/workspaces", "niri/window"],
     "modules-center": ["clock"],
@@ -19,18 +25,32 @@
     },
     "niri/window": {
         "format": "{title}",
-        "max-length": 55,
+        "max-length": 48,
         "separate-outputs": true
     },
     "clock": {
         "format": "{:%H:%M}",
-        "format-alt": "{:%A, %d %B %Y — %H:%M}",
+        "format-alt": "{:%a %d %b · %H:%M}",
+        "format-alt-click": "click-right",
         "tooltip-format": "<tt><small>{calendar}</small></tt>",
-        "calendar": { "mode": "month" }
+        "calendar": { "mode": "month" },
+        "on-click": "gnome-calendar"
     },
-    "cpu": { "format": "CPU {usage}%", "tooltip": false },
-    "memory": { "format": "RAM {percentage}%", "tooltip-format": "{used:0.1f} GiB used" },
-    "temperature": { "format": "{temperatureC}°C", "critical-threshold": 90 },
+    "cpu": {
+        "interval": 2,
+        "format": "CPU {usage}%",
+        "tooltip": false
+    },
+    "memory": {
+        "interval": 5,
+        "format": "RAM {percentage}%",
+        "tooltip-format": "{used:0.1f} GiB used"
+    },
+    "temperature": {
+        "interval": 5,
+        "format": "TEMP {temperatureC}°C",
+        "critical-threshold": 90
+    },
     "network": {
         "format-wifi": "Wi-Fi {signalStrength}%",
         "format-ethernet": "Ethernet",
@@ -43,6 +63,7 @@
         "format": "Vol {volume}%",
         "format-muted": "Vol muted",
         "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "on-click-right": "pavucontrol",
         "on-scroll-up": "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+",
         "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
     },
@@ -50,6 +71,7 @@
         "format": "Mic {volume}%",
         "format-muted": "Mic muted",
         "on-click": "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle",
+        "on-click-right": "pavucontrol",
         "on-scroll-up": "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SOURCE@ 5%+",
         "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%-"
     },
@@ -59,16 +81,22 @@
         "on-scroll-down": "brightnessctl set 5%-"
     },
     "battery": {
+        "interval": 30,
         "states": { "warning": 25, "critical": 10 },
         "format": "Bat {capacity}%",
         "format-charging": "Bat +{capacity}%",
         "format-plugged": "Bat AC {capacity}%",
+        "format-full": "Bat full",
         "tooltip-format": "{timeTo} · {power:.1f} W"
     },
-    "tray": { "spacing": 8 },
+    "tray": {
+        "icon-size": 16,
+        "spacing": 8
+    },
     "custom/session": {
         "format": "Exit",
-        "tooltip": "End the Niri session",
-        "on-click": "niri msg action quit"
+        "tooltip": "Left click: end the Niri session\nRight click: lock",
+        "on-click": "niri msg action quit",
+        "on-click-right": "swaylock -f"
     }
 }
