@@ -1,126 +1,256 @@
-@define-color background #0b0f17;
-@define-color surface rgba(18, 24, 36, 0.96);
-@define-color surface_alt #1b2638;
-@define-color border rgba(92, 225, 230, 0.24);
+@define-color background rgba(11, 15, 23, 0.96);
 @define-color foreground #dce7f2;
-@define-color muted #7f8fa3;
+@define-color muted #65758b;
+
 @define-color accent #5ce1e6;
 @define-color secondary #f05adf;
+
+@define-color border rgba(92, 225, 230, 0.20);
+
 @define-color warning #f3c969;
 @define-color critical #ff6b81;
 @define-color success #7bd88f;
 
+
+/* ---------------------------------------------------------
+ * GLOBAL
+ * --------------------------------------------------------- */
+
 * {
     border: none;
-    border-radius: 0;
-    font-family: "Noto Sans", sans-serif;
-    font-size: 13px;
     min-height: 0;
+
+    font-family:
+        "Noto Sans",
+        "Font Awesome 7 Free",
+        "Symbols Nerd Font Mono",
+        sans-serif;
+
+    font-size: 12px;
 }
+
 
 window#waybar {
-    background: transparent;
+    background: @background;
     color: @foreground;
-}
 
-.modules-left,
-.modules-center,
-.modules-right {
-    background-color: @surface;
     border: 1px solid @border;
-    border-radius: 12px;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.34);
+    border-radius: 7px;
 }
 
-.modules-left {
-    padding: 0 6px;
-}
 
-.modules-center {
-    padding: 0 4px;
-}
-
-.modules-right {
-    padding: 0 5px;
-}
+/* ---------------------------------------------------------
+ * WORKSPACES
+ * --------------------------------------------------------- */
 
 #workspaces {
-    margin-right: 4px;
+    margin: 0;
+    padding: 0 7px;
 }
 
+
 #workspaces button {
-    min-width: 22px;
+    min-width: 0;
+    min-height: 0;
+
+    margin: 0;
     padding: 0 4px;
+
     color: @muted;
-    background-color: transparent;
-    border-radius: 8px;
-    transition-property: background-color, color;
-    transition-duration: 160ms;
+    background: transparent;
+
+    border: none;
+    border-radius: 0;
+
+    box-shadow: none;
+    text-shadow: none;
+
+    font-family: "Font Awesome 7 Free";
+    font-size: 7px;
+    font-weight: 900;
+
+    transition-property: color;
+    transition-duration: 100ms;
 }
+
 
 #workspaces button:hover {
     color: @foreground;
-    background-color: @surface_alt;
+    background: transparent;
+
+    border: none;
+    box-shadow: none;
+    text-shadow: none;
 }
 
-#workspaces button.focused,
-#workspaces button.active {
+
+#workspaces button.active,
+#workspaces button.focused {
     color: @accent;
-    background-color: rgba(92, 225, 230, 0.10);
 }
 
-#workspaces button.urgent {
-    color: @critical;
-    background-color: rgba(255, 107, 129, 0.12);
-}
 
-#window {
-    padding: 0 10px 0 6px;
+#workspaces button.empty {
     color: @muted;
 }
 
-#clock,
+
+#workspaces button.empty.active,
+#workspaces button.empty.focused {
+    color: @accent;
+}
+
+
+/* ---------------------------------------------------------
+ * CLOCK
+ * --------------------------------------------------------- */
+
+#clock {
+    padding: 0 7px;
+
+    color: @foreground;
+    background: transparent;
+
+    font-size: 12px;
+    font-weight: 500;
+
+    transition-property: color;
+    transition-duration: 100ms;
+}
+
+
+#clock:hover {
+    color: @accent;
+}
+
+
+/* ---------------------------------------------------------
+ * RIGHT MODULES
+ * --------------------------------------------------------- */
+
 #cpu,
 #memory,
 #temperature,
 #network,
+#bluetooth,
 #pulseaudio,
 #backlight,
-#battery,
-#tray,
-#custom-session {
-    margin: 3px 1px;
-    padding: 0 7px;
-    border-radius: 8px;
-    transition-property: background-color, color;
-    transition-duration: 160ms;
+#power-profiles-daemon,
+#battery {
+    padding: 0 4px;
+
+    color: @foreground;
+    background: transparent;
+
+    transition-property: color;
+    transition-duration: 100ms;
 }
 
-#clock {
-    min-width: 54px;
-    padding: 0 12px;
-    color: @accent;
-    background-color: rgba(92, 225, 230, 0.08);
-    font-weight: 600;
-}
 
-#clock:hover,
+#cpu:hover,
+#memory:hover,
+#temperature:hover,
+#network:hover,
+#bluetooth:hover,
 #pulseaudio:hover,
 #backlight:hover,
-#custom-session:hover {
-    color: @foreground;
-    background-color: @surface_alt;
+#power-profiles-daemon:hover,
+#battery:hover {
+    color: @accent;
 }
 
-#temperature.critical,
+
+/* Leave a little breathing room at the right edge */
+
+#battery {
+    padding-right: 7px;
+}
+
+
+/* ---------------------------------------------------------
+ * TEMPERATURE
+ * --------------------------------------------------------- */
+
+#temperature.critical {
+    color: @critical;
+}
+
+
+/* ---------------------------------------------------------
+ * NETWORK
+ * --------------------------------------------------------- */
+
+#network.disconnected,
+#network.disabled {
+    color: @muted;
+}
+
+
+/* ---------------------------------------------------------
+ * BLUETOOTH
+ * --------------------------------------------------------- */
+
+#bluetooth.connected {
+    color: @accent;
+}
+
+
+#bluetooth.off,
+#bluetooth.disabled {
+    color: @muted;
+}
+
+
+/* ---------------------------------------------------------
+ * MICROPHONE
+ * --------------------------------------------------------- */
+
+#pulseaudio.microphone.source-muted {
+    color: @muted;
+}
+
+
+/* ---------------------------------------------------------
+ * SPEAKER
+ * --------------------------------------------------------- */
+
+#pulseaudio.speaker.muted {
+    color: @muted;
+}
+
+
+/* ---------------------------------------------------------
+ * POWER PROFILES
+ * --------------------------------------------------------- */
+
+#power-profiles-daemon.performance {
+    color: @secondary;
+}
+
+
+#power-profiles-daemon.balanced {
+    color: @foreground;
+}
+
+
+#power-profiles-daemon.power-saver {
+    color: @success;
+}
+
+
+/* ---------------------------------------------------------
+ * BATTERY
+ * --------------------------------------------------------- */
+
+#battery.warning {
+    color: @warning;
+}
+
+
 #battery.critical {
     color: @critical;
 }
 
-#battery.warning,
-#network.disconnected {
-    color: @warning;
-}
 
 #battery.charging,
 #battery.plugged,
@@ -128,29 +258,44 @@ window#waybar {
     color: @success;
 }
 
-#pulseaudio.muted,
-#pulseaudio.microphone.muted {
-    color: @muted;
+
+/* ---------------------------------------------------------
+ * HOVER MUST ALWAYS WIN
+ * --------------------------------------------------------- */
+
+#network.disconnected:hover,
+#network.disabled:hover,
+#bluetooth.off:hover,
+#bluetooth.disabled:hover,
+#pulseaudio.microphone.source-muted:hover,
+#pulseaudio.speaker.muted:hover,
+#power-profiles-daemon.performance:hover,
+#power-profiles-daemon.balanced:hover,
+#power-profiles-daemon.power-saver:hover,
+#battery.warning:hover,
+#battery.critical:hover,
+#battery.charging:hover,
+#battery.plugged:hover,
+#battery.full:hover {
+    color: @accent;
 }
 
-#tray {
-    padding-left: 8px;
-    padding-right: 8px;
-}
 
-#custom-session {
-    color: @secondary;
-    font-weight: 600;
-}
+/* ---------------------------------------------------------
+ * TOOLTIPS
+ * --------------------------------------------------------- */
 
 tooltip {
-    background-color: @surface;
+    background: @background;
     color: @foreground;
+
     border: 1px solid @border;
-    border-radius: 10px;
+    border-radius: 7px;
 }
 
+
 tooltip label {
-    padding: 6px;
+    padding: 5px 7px;
+
     color: @foreground;
 }
