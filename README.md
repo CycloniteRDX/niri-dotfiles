@@ -18,9 +18,10 @@ hardware validation on 2026-09-05. The battery-only automatic-suspend
 extension also passed hardware validation on 2026-09-05 after its helper's
 executable bit was corrected in `post-install-18-v2`. Host-specific output
 settings remain intentionally unfinished. Chapter 21 now begins the advanced
-personalization series by refining the existing Waybar without changing its
-role or adding another shell component; this candidate awaits hardware
-validation before publication as `post-install-21-v1`.
+personalization series with a compact, icon-led Waybar that keeps the existing
+component owners and adds no shell component. Its required icon fonts are
+`otf-font-awesome` and `ttf-nerd-fonts-symbols-mono`; this candidate awaits
+hardware validation before publication as `post-install-21-v1`.
 
 ## Scope
 
@@ -117,8 +118,8 @@ They provide:
   a tray icon of its own;
 - default handlers for web links, directories, documents, images, text, media,
   archives, calendar files, and office files;
-- a compact three-island Midnight Circuit status bar, launcher, and
-  notification presentation;
+- a compact full-width Midnight Circuit status bar with dynamic Niri workspace
+  dots, a centered clock, and icon-led status modules;
 - immediate and idle-triggered locking, monitor power control, and pre-suspend
   lock coordination.
 - battery-only automatic suspend after 30 idle minutes, through a fail-closed
@@ -160,6 +161,9 @@ Battery-only automatic session suspend is added in
 [chapter 18](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/18-automatic-session-suspend.md).
 The first advanced personalization stage refines Waybar in
 [chapter 21](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/21-waybar-visual-refinement.md).
+That chapter installs and verifies the `Font Awesome 7 Free` and
+`Symbols Nerd Font Mono` families required by the tracked Waybar CSS and
+glyphs. Stow deploys the configuration files; it does not install those fonts.
 
 ## Fresh installations after the desktop is stable
 

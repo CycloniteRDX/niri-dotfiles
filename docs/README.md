@@ -72,7 +72,7 @@ chapter:
 | 15 | `post-install-15-v2` | `post-install-15-v1` | Midnight Circuit visual foundation, with the locker correction |
 | 17 | `post-install-17-v1` | — | Qt 6 appearance integration through qt6ct and Fusion |
 | 18 | `post-install-18-v2` | `post-install-18-v1` | Battery-only automatic session suspend after 30 idle minutes, with an executable helper |
-| 21 | `post-install-21-v1` after hardware validation | — | Three-island Midnight Circuit Waybar refinement with the existing modules and owners |
+| 21 | `post-install-21-v1` after hardware validation | — | Compact full-width Midnight Circuit Waybar with explicit icon-font dependencies and existing component owners |
 
 The published earlier tags remain immutable historical checkpoints. Chapters
 11, 13, and 15 use `v2` because their original swaylock configuration contained a
@@ -215,13 +215,25 @@ The first field of the second command must be `100755` before the corrected
 checkpoint is committed and tagged.
 
 Chapter 21 starts the advanced personalization series without replacing a
-component. Waybar keeps its Niri workspaces, window title, status modules, tray,
-and session action while its presentation becomes three floating Midnight
-Circuit islands. The chapter adds clock-to-calendar, right-click pavucontrol,
-and right-click lock actions using applications and owners already present in
-the validated system. `post-install-21-v1` remains a planned reference until
-the complete visual, interaction, reload, logout/login, and rollback matrix
-passes on hardware.
+component. Waybar becomes a compact full-width bar with dynamic Niri workspace
+dots, a fixed-center US-style clock, and separate CPU, memory, temperature,
+network, Bluetooth, microphone, speaker, brightness, power-profile, and battery
+modules. Window title, tray, and the session button are deliberately omitted;
+Niri's established bindings continue to own session exit and manual locking.
+
+The CSS names `Font Awesome 7 Free` and `Symbols Nerd Font Mono`, supplied by
+the official Arch packages `otf-font-awesome` and
+`ttf-nerd-fonts-symbols-mono`. The former supplies the workspace dots and most
+status icons; the latter supplies the Material Design brightness glyphs. These
+are runtime dependencies of the `waybar` Stow package, not files vendored in
+this repository. Installation and Fontconfig verification belong to
+post-install chapter 21. The configuration also reuses btop, NetworkManager,
+BlueZ/Blueman, PipeWire/WirePlumber, pavucontrol, brightnessctl, GNOME Calendar,
+and TLP's `tlp-pd` interface from earlier chapters.
+
+`post-install-21-v1` remains a planned reference until the complete font,
+visual, interaction, reload, logout/login, and rollback matrix passes on
+hardware.
 
 ## Deployment lifecycle
 
@@ -291,7 +303,7 @@ outside the active path; they are never overwritten blindly.
 | Niri configuration | Starts the reviewed chapter 10 session components. |
 | Removable-media autostart | udiskie through a portable XDG desktop entry. |
 | Default applications | Portable `mimeapps.list` deployed as an independent Stow package. |
-| Status bar | Waybar with native Niri modules and the chapter 21 three-island Midnight Circuit presentation. |
+| Status bar | Compact full-width Waybar with native Niri workspaces, icon-led status modules, and the chapter 21 Midnight Circuit presentation. |
 | Launcher | Fuzzel. |
 | Notifications | Mako. |
 | Wallpaper | swaybg with the project-owned `midnight-circuit.svg` and a dark solid fallback. |
@@ -303,6 +315,7 @@ outside the active path; they are never overwritten blindly.
 | GTK | `adw-gtk3-dark` for GTK 3 and the standard dark preference for GTK 4/libadwaita. |
 | Qt 6 | qt6ct with Fusion, the Midnight Circuit palette, Papirus Dark, Noto fonts, and portal-backed standard dialogs. |
 | Icons | Papirus Dark. |
+| Waybar glyph fonts | `Font Awesome 7 Free` from `otf-font-awesome` and `Symbols Nerd Font Mono` from `ttf-nerd-fonts-symbols-mono`. |
 | Cursor | `breeze_cursors`, 24 px, exported by Niri for the Wayland session. |
 | Kitty | Noto Sans Mono with the shared opaque Midnight Circuit palette. |
 | Keyboard layout | Portable baseline sets `us`; per-host overrides remain deferred. |
