@@ -197,6 +197,8 @@ spawn-at-startup "waybar"
 
 spawn-at-startup "mako"
 
+spawn-sh-at-startup "$HOME/.config/niri/scripts/power-profile-refresh.py"
+
 spawn-sh-at-startup "wallpaper=\"$HOME/.local/share/wallpapers/midnight-circuit.svg\"; if [ -r \"$wallpaper\" ]; then exec swaybg -i \"$wallpaper\" -m fill -c '#0b0f17'; else exec swaybg -c '#0b0f17'; fi"
 
 spawn-at-startup "swayidle" "-w" \
