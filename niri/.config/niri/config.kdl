@@ -31,8 +31,12 @@ input {
 
         natural-scroll
 
-        // Slightly slower than libinput's default.
-        scroll-factor 0.75
+        // Slightly slower scrolling than libinput's default.
+        scroll-factor 0.70
+
+        // Slightly faster pointer movement while keeping the
+        // default adaptive acceleration profile.
+        accel-speed 0.15
 
         // 1 finger = left click
         // 2 fingers = right click
@@ -40,8 +44,12 @@ input {
         tap-button-map "left-right-middle"
     }
 
-    // Mouse and TrackPoint keep libinput defaults for now.
-    // Pointer sensitivity will be tuned in a second pass.
+    // Mouse keeps libinput defaults.
+
+    // The ThinkPad TrackPoint is too fast at its default speed.
+    trackpoint {
+        accel-speed -0.40
+    }
 
     warp-mouse-to-focus
     focus-follows-mouse max-scroll-amount="10%"
@@ -53,6 +61,16 @@ input {
 // Output configuration is intentionally omitted for now.
 // Niri will select the appropriate mode, refresh rate and scale automatically.
 // We will tune the internal panel and external-monitor behavior separately.
+
+
+// Built-in ThinkPad display.
+//
+// Keep the native resolution, preferred refresh rate and the fractional
+// scaling used for the 14-inch internal panel.
+output "eDP-1" {
+    mode "1920x1080@60.049"
+    scale 1.25
+}
 
 
 cursor {
@@ -564,11 +582,11 @@ binds {
     // -----------------------------------------------------------------
 
     XF86AudioRaiseVolume allow-when-locked=true {
-        spawn "wpctl" "set-volume" "-l" "1.0" "@DEFAULT_AUDIO_SINK@" "5%+";
+        spawn "wpctl" "set-volume" "-l" "1.0" "@DEFAULT_AUDIO_SINK@" "2%+";
     }
 
     XF86AudioLowerVolume allow-when-locked=true {
-        spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-";
+        spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "2%-";
     }
 
     XF86AudioMute allow-when-locked=true {
