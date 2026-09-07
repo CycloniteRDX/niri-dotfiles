@@ -6,10 +6,10 @@
 // - Vim-style HJKL navigation
 // - scrollable tiling with compact spacing
 // - cyan/magenta visual language shared with Waybar
-// - conservative defaults where tuning is not yet necessary
+// - measured first-ThinkPad input and internal-panel tuning
 //
-// Output configuration and pointer sensitivity are intentionally left
-// for a second hardware-specific tuning pass.
+// The eDP-1 mode and scale below are hardware-validated on the first target.
+// Recheck them before deploying this checkpoint on another panel or machine.
 
 input {
     keyboard {
@@ -58,15 +58,12 @@ input {
 }
 
 
-// Output configuration is intentionally omitted for now.
-// Niri will select the appropriate mode, refresh rate and scale automatically.
-// We will tune the internal panel and external-monitor behavior separately.
-
-
 // Built-in ThinkPad display.
 //
-// Keep the native resolution, preferred refresh rate and the fractional
-// scaling used for the 14-inch internal panel.
+// Keep the measured native mode and fractional scale used for this 14-inch
+// panel. External outputs remain automatic unless a later reviewed rule says
+// otherwise. The session helper switches only this output to its advertised
+// 48.040 Hz mode while TLP's explicit power-saver profile is active.
 output "eDP-1" {
     mode "1920x1080@60.049"
     scale 1.25

@@ -5,7 +5,7 @@ Arch Linux post-install repository.
 
 ## Project status
 
-Portable daily-driver stage. The repository contains the reviewed Niri desktop,
+Validated first-target daily-driver stage. The repository contains the reviewed Niri desktop,
 removable-media autostart, default-application map, bar, launcher, notification
 daemon, wallpaper location, screen-locker configuration, idle lifecycle, and
 Kitty terminal configuration. It also contains the portable Midnight Circuit
@@ -13,15 +13,15 @@ visual foundation: a project-owned wallpaper, one shared dark palette, GTK
 preferences, Papirus icons, the Breeze cursor theme, and a matching Qt 6
 widget palette through qt6ct and Fusion.
 The underlying baseline passed the complete post-install validation on the
-first target ThinkPad on 2026-09-04, and the Qt 6 extension passed its own
-hardware validation on 2026-09-05. The battery-only automatic-suspend
-extension also passed hardware validation on 2026-09-05 after its helper's
-executable bit was corrected in `post-install-18-v2`. Host-specific output
-settings remain intentionally unfinished. Chapter 21 now begins the advanced
-personalization series with a compact, icon-led Waybar that keeps the existing
-component owners and adds no shell component. Its required icon fonts are
-`otf-font-awesome` and `ttf-nerd-fonts-symbols-mono`; this candidate awaits
-hardware validation before publication as `post-install-21-v1`.
+first target ThinkPad on 2026-09-04, and the Qt 6, automatic-suspend, Plymouth,
+and TPM2 extensions passed their separate hardware validations. Chapter 21's
+compact, icon-led Waybar passed hardware validation on 2026-09-07; its required
+icon fonts are `otf-font-awesome` and
+`ttf-nerd-fonts-symbols-mono`. Chapter 22 records the same target's finished
+Niri v1 configuration and its event-driven TLP profile-to-refresh integration,
+also hardware-validated on 2026-09-07. The exact internal-panel policy is
+specific to this first measured ThinkPad; the second machine still requires
+its own output record before this checkpoint is reused there.
 
 ## Scope
 
@@ -89,6 +89,7 @@ The current Stow packages own these areas:
 
 ```text
 niri/.config/niri/config.kdl
+niri/.config/niri/scripts/power-profile-refresh.py
 autostart/.config/autostart/udiskie.desktop
 mimeapps/.config/mimeapps.list
 waybar/.config/waybar/{config.jsonc,style.css}
@@ -124,18 +125,22 @@ They provide:
   lock coordination.
 - battery-only automatic suspend after 30 idle minutes, through a fail-closed
   UPower helper that preserves systemd inhibitors;
-- complete portable Niri navigation, movement, sizing, workspace, floating, and
-  tabbed-layout bindings;
+- the first target's finished Niri v1 input, navigation, movement, sizing,
+  workspace, floating, tabbed-layout, overview, and recent-window behavior;
+- event-driven switching of `eDP-1` between 60.049 Hz and 48.040 Hz from
+  TLP's standard profile interface, with reapplication after resume;
 - a reproducible Midnight Circuit palette using Noto Sans and Noto Sans Mono;
 - a project-owned SVG wallpaper with a solid-colour fallback;
 - dark GTK preferences, Papirus Dark icons, and the Breeze cursor theme;
 - Qt 6 widget fonts, icons, dialogs, Fusion style, and a custom Midnight
   Circuit palette through qt6ct.
 
-It deliberately does not configure outputs, scaling, Qt 5, Kvantum, a forced
+It deliberately does not configure external outputs, Qt 5, Kvantum, a forced
 Qt platform backend, automatic suspend on AC, hibernation, or automatic login.
-The portable baseline currently sets the XKB layout to `us`; a future
-host-override design may replace that shared choice per machine. The qt6ct
+The current `eDP-1` mode and 1.25 scale are validated only for the first
+target ThinkPad; they are not yet a portable two-machine policy. The
+configuration sets the XKB layout to `us`, maps Caps Lock to Ctrl, and uses
+right Alt as Compose. The qt6ct
 palette path contains the canonical account `/home/neon`; adapt that single
 line before deployment if the repository is reused under another user. greetd
 and tuigreet are system configuration documented outside this user-level
@@ -164,6 +169,11 @@ The first advanced personalization stage refines Waybar in
 That chapter installs and verifies the `Font Awesome 7 Free` and
 `Symbols Nerd Font Mono` families required by the tracked Waybar CSS and
 glyphs. Stow deploys the configuration files; it does not install those fonts.
+The finished Niri v1 input, layout, binding, and adaptive-refresh policy is
+recorded in
+[chapter 22](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/22-niri-daily-driver-refinement.md).
+That chapter makes `playerctl` and `python-gobject` explicit runtime
+dependencies and documents why the internal-panel values are host-specific.
 
 ## Fresh installations after the desktop is stable
 
@@ -182,7 +192,9 @@ ancestors.
 
 Selecting the latest dotfiles tag does not install packages or system files.
 The matching post-install state is still required before its configuration is
-deployed.
+deployed. A target-specific tag must also match the measured machine: chapter
+22 is ready for the first ThinkPad, while the second must verify its connector,
+exact timings, and preferred scale before selecting it.
 
 When the first fully personalized desktop is declared stable, publish a
 semantic dotfiles release tag as the ordinary reinstall target and record the
@@ -218,6 +230,7 @@ stow --verbose --no-folding --target="$HOME" theme
 stow --verbose --no-folding --target="$HOME" qt6ct
 stow --verbose --no-folding --target="$HOME" scripts
 test -x "$HOME/.local/bin/idle-suspend"
+test -x "$HOME/.config/niri/scripts/power-profile-refresh.py"
 niri validate
 ```
 

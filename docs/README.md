@@ -20,10 +20,12 @@ directory:
 └── niri/
     └── .config/
         └── niri/
-            └── config.kdl
+            ├── config.kdl
+            └── scripts/
+                └── power-profile-refresh.py
 ```
 
-Future component packages, host overrides, scripts, or tests will be created
+New component packages, host overrides, or tests will be created
 only when they contain reviewed files.
 
 | Path | Intended role |
@@ -31,7 +33,7 @@ only when they contain reviewed files.
 | `docs/` | Deployment, recovery, component map, and customization notes. |
 | `autostart/` | Portable XDG autostart entries for reviewed session utilities. |
 | `mimeapps/` | Portable XDG default-application associations. |
-| `niri/` | Portable Niri files arranged relative to `$HOME` for GNU Stow. |
+| `niri/` | Niri configuration plus the first target's measured input/output helper, arranged relative to `$HOME` for GNU Stow. |
 | `waybar/` | Niri-aware status bar configuration and CSS. |
 | `fuzzel/` | Application-launcher configuration. |
 | `mako/` | Notification presentation and urgency policy. |
@@ -61,7 +63,7 @@ chapter. A clean installation following `arch-linux-post-install` therefore
 checks out an immutable tag before deploying the files introduced by each
 chapter:
 
-| Post-install chapter | Git tag | Corrected base | New configuration stage |
+| Post-install chapter | Git tag | Reference commit or corrected base | New configuration stage |
 | --- | --- | --- | --- |
 | 05 | `post-install-05-v1` | `499059b` | Minimal Niri and polkit bootstrap |
 | 07 | `post-install-07-v1` | `291d85b` | udiskie XDG autostart |
@@ -72,7 +74,8 @@ chapter:
 | 15 | `post-install-15-v2` | `post-install-15-v1` | Midnight Circuit visual foundation, with the locker correction |
 | 17 | `post-install-17-v1` | — | Qt 6 appearance integration through qt6ct and Fusion |
 | 18 | `post-install-18-v2` | `post-install-18-v1` | Battery-only automatic session suspend after 30 idle minutes, with an executable helper |
-| 21 | `post-install-21-v1` after hardware validation | — | Compact full-width Midnight Circuit Waybar with explicit icon-font dependencies and existing component owners |
+| 21 | `post-install-21-v1` | `b922d85` | Hardware-validated compact full-width Midnight Circuit Waybar with explicit icon-font dependencies |
+| 22 | `post-install-22-v1` | Final documentation commit | Hardware-validated Niri v1 input, layout, bindings, and TLP-aware internal-panel refresh |
 
 The published earlier tags remain immutable historical checkpoints. Chapters
 11, 13, and 15 use `v2` because their original swaylock configuration contained a
@@ -178,10 +181,10 @@ the post-install repository. Each non-empty swaylock configuration key must be
 a supported long-option name; the visible unlock indicator needs no standalone
 `indicator` key because it is enabled by default.
 
-Chapter 13 replaces the Niri bootstrap behavior with the complete portable
-daily-driver bindings and adds Kitty as an independent package. Output modes,
-scaling, and TrackPoint tuning remain outside the shared baseline until each
-host has been measured.
+Chapter 13 replaces the Niri bootstrap behavior with the then-portable
+daily-driver bindings and adds Kitty as an independent package. Chapter 22
+later specializes the first target's input and internal output after hardware
+measurement; the chapter 13 tag remains the portable historical checkpoint.
 
 Chapter 15 adds the Midnight Circuit visual foundation without replacing the
 modular desktop components. The shared package owns GTK preference files and a
@@ -231,9 +234,29 @@ post-install chapter 21. The configuration also reuses btop, NetworkManager,
 BlueZ/Blueman, PipeWire/WirePlumber, pavucontrol, brightnessctl, GNOME Calendar,
 and TLP's `tlp-pd` interface from earlier chapters.
 
-`post-install-21-v1` remains a planned reference until the complete font,
-visual, interaction, reload, logout/login, and rollback matrix passes on
-hardware.
+`post-install-21-v1` points to `b922d85`, the last clean Waybar-only
+commit. It remains separate from the later Niri and coordinated input changes
+even though the final cumulative Waybar state is also validated.
+
+Chapter 22 finishes Niri v1 on the first target ThinkPad. The selected input
+policy uses a US layout, right Alt Compose, Caps Lock as Ctrl, tuned touchpad
+scroll and acceleration, a slower TrackPoint, pointer warp, focus following the
+pointer, and workspace auto-back-and-forth. The window policy adds the accepted
+gaps, proportional presets, gradient focus ring, shadow, rounded clipping,
+overview, recent-window switcher, and the complete daily binding map.
+
+The first measured internal panel is `eDP-1` at
+`1920x1080@60.049` with scale `1.25`. The executable
+`niri/.config/niri/scripts/power-profile-refresh.py` observes the standard
+`org.freedesktop.UPower.PowerProfiles` D-Bus interface supplied by
+`tlp-pd`: performance and balanced use 60.049 Hz, while power-saver uses
+48.040 Hz. It also observes logind's resume signal and reapplies the selected
+mode. The helper neither polls nor changes TLP policy.
+
+Git must record the helper as mode `100755`. Its explicit runtime dependency
+is `python-gobject`; Niri's media keys also make `playerctl` explicit. The
+second ThinkPad must be measured before this target-specific output block is
+reused or moved into a dedicated host package.
 
 ## Deployment lifecycle
 
@@ -259,6 +282,7 @@ stow --verbose --no-folding --target="$HOME" qt6ct
 stow --simulate --verbose --no-folding --target="$HOME" scripts
 stow --verbose --no-folding --target="$HOME" scripts
 test -x "$HOME/.local/bin/idle-suspend"
+test -x "$HOME/.config/niri/scripts/power-profile-refresh.py"
 niri validate
 ```
 
@@ -274,6 +298,7 @@ stow --restow --verbose --no-folding --target="$HOME" kitty
 stow --restow --verbose --no-folding --target="$HOME" theme
 stow --restow --verbose --no-folding --target="$HOME" qt6ct
 stow --restow --verbose --no-folding --target="$HOME" scripts
+test -x "$HOME/.config/niri/scripts/power-profile-refresh.py"
 niri validate
 ```
 
@@ -300,7 +325,7 @@ outside the active path; they are never overwritten blindly.
 | --- | --- |
 | Deployment method | GNU Stow selected. |
 | Terminal | Kitty selected for the canonical system. Foot may be compared separately. |
-| Niri configuration | Starts the reviewed chapter 10 session components. |
+| Niri configuration | Finished chapter 22 daily-driver behavior on the first target ThinkPad. |
 | Removable-media autostart | udiskie through a portable XDG desktop entry. |
 | Default applications | Portable `mimeapps.list` deployed as an independent Stow package. |
 | Status bar | Compact full-width Waybar with native Niri workspaces, icon-led status modules, and the chapter 21 Midnight Circuit presentation. |
@@ -310,7 +335,9 @@ outside the active path; they are never overwritten blindly.
 | Screenshots | Niri's built-in actions. |
 | Screen lock | swaylock with PAM authentication. |
 | Idle lifecycle | swayidle: lock at 5 min, monitors off at 10 min, battery-only suspend at 30 min, lock before sleep. |
-| Niri daily-driver controls | Portable focus, movement, workspaces, sizing, floating, tabs, screenshots, and hardware keys. |
+| Niri daily-driver controls | Validated focus, movement, workspaces, sizing, floating, tabs, overview, recent windows, screenshots, and hardware keys. |
+| Internal output | First target: `eDP-1`, 1920×1080 at 60.049/48.040 Hz, scale 1.25. |
+| Refresh integration | Event-driven TLP profile observer; 48.040 Hz only in power-saver and 60.049 Hz otherwise. |
 | Visual palette | Midnight Circuit: dark navy and graphite, cyan primary accent, restrained fuchsia secondary accent. |
 | GTK | `adw-gtk3-dark` for GTK 3 and the standard dark preference for GTK 4/libadwaita. |
 | Qt 6 | qt6ct with Fusion, the Midnight Circuit palette, Papirus Dark, Noto fonts, and portal-backed standard dialogs. |
@@ -318,16 +345,16 @@ outside the active path; they are never overwritten blindly.
 | Waybar glyph fonts | `Font Awesome 7 Free` from `otf-font-awesome` and `Symbols Nerd Font Mono` from `ttf-nerd-fonts-symbols-mono`. |
 | Cursor | `breeze_cursors`, 24 px, exported by Niri for the Wayland session. |
 | Kitty | Noto Sans Mono with the shared opaque Midnight Circuit palette. |
-| Keyboard layout | Portable baseline sets `us`; per-host overrides remain deferred. |
+| Keyboard and pointing | `us`, right Alt Compose, Caps Lock as Ctrl, and validated touchpad/TrackPoint tuning. |
 
 ## Current personalization order
 
-1. Waybar.
-2. Fuzzel.
-3. Mako.
-4. swaylock.
-5. swaybg and wallpaper presentation.
-6. Niri window, overview, and motion details.
+1. Waybar — complete and hardware-validated.
+2. Niri — moved forward, complete, and hardware-validated on the first target.
+3. Fuzzel — next.
+4. Mako.
+5. swaylock.
+6. swaybg and wallpaper presentation.
 7. Kitty plus GTK and Qt consistency.
 8. tuigreet.
 9. Plymouth.
@@ -339,7 +366,8 @@ complete current stack is visually coherent and hardware-validated.
 
 ## Decisions still required
 
-- Host override strategy for the two ThinkPads.
+- Measure the second ThinkPad and decide whether its output policy requires a
+  dedicated host package.
 
 Each decision should be made in the post-install project before its
 configuration is added here.
