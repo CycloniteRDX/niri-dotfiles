@@ -1,0 +1,207 @@
+" ============================================================
+" Vim
+" ============================================================
+"
+" Design goals:
+" - learn standard Vim behaviour
+" - comfortable editing without plugins
+" - clean, predictable defaults
+" - integrate visually with RogueOS
+
+
+" ------------------------------------------------------------
+" General
+" ------------------------------------------------------------
+
+" Enable syntax highlighting and filetype-specific behaviour.
+syntax enable
+filetype plugin indent on
+
+" Use true colour when supported by the terminal.
+if has('termguicolors')
+    set termguicolors
+endif
+
+" Keep the current mode visible.
+set showmode
+
+" Show partial commands such as 'd2'.
+set showcmd
+
+" Always show a status line.
+set laststatus=2
+
+" Enable command-line completion menu.
+set wildmenu
+
+" Allow mouse use without changing Vim's keyboard workflow.
+set mouse=a
+
+
+" ------------------------------------------------------------
+" Lines and navigation
+" ------------------------------------------------------------
+
+" Absolute line numbers are easier while learning Vim.
+set number
+set norelativenumber
+
+" Keep a small amount of context around the cursor.
+set scrolloff=4
+set sidescrolloff=4
+
+" Visually wrap long lines without modifying the file.
+set wrap
+set linebreak
+set breakindent
+
+
+" ------------------------------------------------------------
+" Editing
+" ------------------------------------------------------------
+
+" Use four spaces for indentation.
+set expandtab
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+
+" Preserve indentation from the previous line.
+set autoindent
+
+" Allow Backspace to behave naturally in Insert mode.
+set backspace=indent,eol,start
+
+
+" ------------------------------------------------------------
+" Searching
+" ------------------------------------------------------------
+
+" Search while typing.
+set incsearch
+
+" Highlight all matches.
+set hlsearch
+
+" Case-insensitive unless the search contains uppercase letters.
+set ignorecase
+set smartcase
+
+
+" ------------------------------------------------------------
+" Undo / temporary files
+" ------------------------------------------------------------
+
+" Persistent undo history.
+set undofile
+set undodir=~/.local/state/vim/undo//
+
+" Keep swap files away from project directories.
+set directory=~/.local/state/vim/swap//
+
+" Do not leave backup files next to edited files.
+set nobackup
+set nowritebackup
+
+
+" ------------------------------------------------------------
+" Clipboard
+" ------------------------------------------------------------
+
+" Integrate Vim's clipboard registers with Wayland through
+" wl-clipboard when native clipboard support is unavailable.
+if has('clipboard_provider') && executable('wl-copy') && executable('wl-paste')
+
+    function! s:RogueOSClipboardCopy(reg, type, lines) abort
+        if a:reg ==# '*'
+            let l:cmd = ['wl-copy', '--primary', '--type', 'text/plain']
+        else
+            let l:cmd = ['wl-copy', '--type', 'text/plain']
+        endif
+
+        let l:lines = copy(a:lines)
+
+        " Preserve linewise selections with a trailing newline.
+        if a:type ==# 'V'
+            call add(l:lines, '')
+        endif
+
+        call system(l:cmd, l:lines)
+    endfunction
+
+    function! s:RogueOSClipboardPaste(reg) abort
+        if a:reg ==# '*'
+            let l:cmd = ['wl-paste', '--primary']
+        else
+            let l:cmd = ['wl-paste']
+        endif
+
+        let l:text = system(l:cmd)
+
+        if l:text =~# "\n$"
+            return ['V', split(l:text, "\n", 1)[:-2]]
+        endif
+
+        return ['v', split(l:text, "\n", 1)]
+    endfunction
+
+    let v:clipproviders['wlclipboard'] = {
+        \ 'available': {-> !empty($WAYLAND_DISPLAY)},
+        \ 'copy': {
+        \     '+': function('s:RogueOSClipboardCopy'),
+        \     '*': function('s:RogueOSClipboardCopy')
+        \ },
+        \ 'paste': {
+        \     '+': function('s:RogueOSClipboardPaste'),
+        \     '*': function('s:RogueOSClipboardPaste')
+        \ }
+        \ }
+
+    set clipmethod^=wlclipboard
+    set clipboard=unnamedplus
+
+elseif has('clipboard')
+    set clipboard=unnamedplus
+endif
+
+
+" ------------------------------------------------------------
+" Window behaviour
+" ------------------------------------------------------------
+
+" New splits open in intuitive directions.
+set splitbelow
+set splitright
+
+
+" ------------------------------------------------------------
+" Status line
+" ------------------------------------------------------------
+
+set statusline=%f
+set statusline+=%m
+set statusline+=%r
+set statusline+=%=
+set statusline+=%y
+set statusline+=\ %l:%c
+set statusline+=\ %p%%
+
+
+" ------------------------------------------------------------
+" RogueOS colours
+" ------------------------------------------------------------
+
+set background=dark
+colorscheme habamax
+
+highlight Normal       guifg=#dce7f2 guibg=#0b0f17
+highlight LineNr       guifg=#52647a guibg=#0b0f17
+highlight CursorLineNr guifg=#5ce1e6 guibg=#0b0f17 gui=bold
+highlight StatusLine   guifg=#dce7f2 guibg=#121824
+highlight StatusLineNC guifg=#52647a guibg=#121824
+highlight Visual       guifg=#dce7f2 guibg=#2a3a50
+highlight Search       guifg=#0b0f17 guibg=#5ce1e6
+highlight IncSearch    guifg=#0b0f17 guibg=#f05adf
+highlight MatchParen   guifg=#0b0f17 guibg=#f05adf gui=bold
+highlight ErrorMsg     guifg=#ff6b81 guibg=#0b0f17
+highlight WarningMsg   guifg=#f3c969 guibg=#0b0f17
