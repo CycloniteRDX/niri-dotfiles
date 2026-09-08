@@ -8,9 +8,12 @@ width=360
 height=140
 margin=10
 padding=12
+
 default-timeout=7000
 ignore-timeout=0
 max-visible=5
+
+layer=overlay
 anchor=top-right
 
 [urgency=high]
