@@ -1,21 +1,115 @@
+# ============================================================
+# Mako
+# ============================================================
+#
+# Design goals:
+# - dark cyan/magenta theme matching Niri, Waybar and Kitty
+# - compact notifications with clear urgency levels
+# - useful notification history
+# - actions available without adding a full notification center
+# - notifications visible above fullscreen windows
+
+
+# ------------------------------------------------------------
+# Appearance
+# ------------------------------------------------------------
+
 font=Noto Sans 11
+
 background-color=#121824f2
 text-color=#dce7f2ff
+
 border-color=#5ce1e6ff
 border-size=2
 border-radius=8
+
 width=360
 height=140
-margin=10
+
+# Space between the notification stack and the screen edge.
+outer-margin=10
+
+# Space around each individual notification.
+margin=5
+
 padding=12
+
+text-alignment=left
+
+
+# ------------------------------------------------------------
+# Icons
+# ------------------------------------------------------------
+
+icons=1
+icon-path=/usr/share/icons/Adwaita
+max-icon-size=48
+icon-location=left
+icon-border-radius=6
+
+
+# ------------------------------------------------------------
+# Progress indicator
+# ------------------------------------------------------------
+
+# Used when an application sends a notification with a
+# percentage/value hint.
+progress-color=over #5ce1e680
+
+
+# ------------------------------------------------------------
+# Timing and history
+# ------------------------------------------------------------
 
 default-timeout=7000
 ignore-timeout=0
-max-visible=5
 
+max-visible=5
+max-history=20
+
+
+# ------------------------------------------------------------
+# Placement
+# ------------------------------------------------------------
+
+# Overlay keeps notifications visible above fullscreen windows.
 layer=overlay
 anchor=top-right
 
-[urgency=high]
+
+# ------------------------------------------------------------
+# Interaction
+# ------------------------------------------------------------
+
+# Open/invoke the notification's default action.
+on-button-left=invoke-default-action
+
+# Show all actions offered by the notification in Fuzzel.
+on-button-middle=exec makoctl menu -n "$id" -- fuzzel --dmenu --prompt "Action: "
+
+# Dismiss the notification.
+on-button-right=dismiss
+on-touch=dismiss
+
+
+# ------------------------------------------------------------
+# Low-priority notifications
+# ------------------------------------------------------------
+
+[urgency=low]
+
+border-color=#52647aff
+default-timeout=4000
+
+
+# ------------------------------------------------------------
+# Critical notifications
+# ------------------------------------------------------------
+
+[urgency=critical]
+
 border-color=#ff6b81ff
+
+# Critical notifications remain until explicitly dismissed.
 default-timeout=0
+ignore-timeout=1
