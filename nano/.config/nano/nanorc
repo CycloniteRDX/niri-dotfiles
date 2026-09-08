@@ -1,0 +1,59 @@
+# ============================================================
+# GNU nano
+# ============================================================
+#
+# Design goals:
+# - simple and predictable editing
+# - comfortable defaults for configs and small files
+# - preserve file contents: visual wrapping only
+# - useful navigation and syntax highlighting
+
+
+# ------------------------------------------------------------
+# Editing
+# ------------------------------------------------------------
+
+set autoindent
+set tabstospaces
+set tabsize 4
+set softwrap
+set smarthome
+
+
+# ------------------------------------------------------------
+# Navigation / information
+# ------------------------------------------------------------
+
+set linenumbers
+set constantshow
+set indicator
+set positionlog
+
+
+# ------------------------------------------------------------
+# History
+# ------------------------------------------------------------
+
+set historylog
+
+
+# ------------------------------------------------------------
+# Mouse
+# ------------------------------------------------------------
+
+set mouse
+
+
+# ------------------------------------------------------------
+# Syntax highlighting
+# ------------------------------------------------------------
+
+# Syntax definitions shipped with GNU nano.
+include "/usr/share/nano/*.nanorc"
+include "/usr/share/nano/extra/*.nanorc"
+
+# Additional highlighting from Arch's nano-syntax-highlighting package.
+include "/usr/share/nano-syntax-highlighting/*.nanorc"
+
+# Local syntax definitions maintained in our dotfiles.
+include "~/.config/nano/kdl.nanorc"

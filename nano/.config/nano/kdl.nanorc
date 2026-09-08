@@ -1,0 +1,64 @@
+# ============================================================
+# KDL syntax highlighting
+# ============================================================
+#
+# Primarily intended for Niri config.kdl files.
+
+syntax "KDL" "\.kdl$"
+
+comment "//"
+
+
+# ------------------------------------------------------------
+# Comments
+# ------------------------------------------------------------
+
+color brightblack "//.*$"
+color brightblack start="/\*" end="\*/"
+
+
+# ------------------------------------------------------------
+# Strings
+# ------------------------------------------------------------
+
+# Standard quoted strings.
+color brightmagenta ""([^"\\]|\\.)*""
+
+# KDL raw strings commonly used by Niri, for example:
+# r#"firefox$"#
+color brightmagenta "r#+".*"#+"
+
+# ------------------------------------------------------------
+# Numbers
+# ------------------------------------------------------------
+
+color brightcyan "[-+]?[0-9]+([.][0-9]+)?"
+
+
+# ------------------------------------------------------------
+# Booleans / null
+# ------------------------------------------------------------
+
+color brightyellow "\<(true|false|null)\>"
+
+
+# ------------------------------------------------------------
+# Properties
+# ------------------------------------------------------------
+
+# key=value
+color brightgreen "[A-Za-z_][A-Za-z0-9_-]*[[:space:]]*="
+
+
+# ------------------------------------------------------------
+# Structural punctuation
+# ------------------------------------------------------------
+
+color cyan "[{}()]"
+
+
+# ------------------------------------------------------------
+# Common Niri actions / directives
+# ------------------------------------------------------------
+
+color brightblue "\<(input|keyboard|touchpad|mouse|trackpoint|output|cursor|environment|layout|overview|recent-windows|animations|window-rule|binds|focus-ring|border|shadow|spawn-at-startup|spawn-sh-at-startup)\>"
