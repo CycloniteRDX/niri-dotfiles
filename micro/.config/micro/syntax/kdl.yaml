@@ -1,0 +1,43 @@
+filetype: kdl
+
+detect:
+    filename: "\\.kdl$"
+
+rules:
+    # Comments
+    - comment:
+        start: "//"
+        end: "$"
+        rules:
+            - todo: "(TODO|FIXME|NOTE|XXX):?"
+
+    - comment:
+        start: "/\\*"
+        end: "\\*/"
+        rules: []
+
+    # Strings
+    - constant.string:
+        start: "\""
+        end: "\""
+        skip: "\\\\."
+        rules:
+            - constant.specialChar: "\\\\."
+
+    # KDL raw strings, e.g. r#"firefox$"#
+    - constant.string: "r#+\".*\"#+"
+
+    # Numbers
+    - constant.number: "\\b[-+]?[0-9]+([.][0-9]+)?\\b"
+
+    # Boolean / null values
+    - constant: "\\b(true|false|null)\\b"
+
+    # Properties such as max-scroll-amount=
+    - identifier: "[A-Za-z_][A-Za-z0-9_-]*[[:space:]]*="
+
+    # Common Niri sections and directives
+    - statement: "\\b(input|keyboard|touchpad|mouse|trackpoint|output|cursor|environment|layout|overview|recent-windows|animations|window-rule|binds|focus-ring|border|shadow|spawn-at-startup|spawn-sh-at-startup)\\b"
+
+    # Structural punctuation
+    - symbol.brackets: "[{}()]"

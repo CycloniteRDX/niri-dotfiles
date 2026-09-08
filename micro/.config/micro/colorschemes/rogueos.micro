@@ -1,0 +1,51 @@
+# ============================================================
+# RogueOS
+# ============================================================
+#
+# Dark cyan / magenta theme matching the desktop environment.
+
+color-link default "#dce7f2,#0b0f17"
+
+color-link comment "#52647a"
+color-link constant "#f3c969"
+color-link constant.number "#5ce1e6"
+color-link constant.string "#f05adf"
+color-link constant.specialChar "#ff6b81"
+
+color-link identifier "#dce7f2"
+color-link identifier.var "#dce7f2"
+color-link identifier.class "bold #5ce1e6"
+color-link identifier.macro "#f05adf"
+
+color-link statement "bold #5ce1e6"
+color-link preproc "#f05adf"
+color-link type "#5ce1e6"
+color-link special "#f05adf"
+
+color-link symbol "#dce7f2"
+color-link symbol.brackets "#5ce1e6"
+color-link symbol.operator "#f05adf"
+
+color-link error "#dce7f2,#ff6b81"
+color-link todo "#0b0f17,#f3c969"
+
+color-link hlsearch "#0b0f17,#5ce1e6"
+color-link match-brace "bold #0b0f17,#f05adf"
+
+color-link line-number "#52647a,#0b0f17"
+color-link current-line-number "bold #5ce1e6,#121824"
+
+color-link statusline "#dce7f2,#121824"
+color-link tabbar "#52647a,#121824"
+color-link divider "#2a3a50,#0b0f17"
+
+color-link diff-added "#5ce1e6"
+color-link diff-modified "#f3c969"
+color-link diff-deleted "#ff6b81"
+
+color-link gutter-info "#5ce1e6"
+color-link gutter-warning "#f3c969"
+color-link gutter-error "#ff6b81"
+
+color-link tab-error "#ff6b81"
+color-link trailingws ",#ff6b81"

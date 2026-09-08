@@ -1,0 +1,26 @@
+filetype: kitty
+
+detect:
+    filename: "(^|/)kitty\\.conf$"
+
+rules:
+    # Comments
+    - comment: "^[[:space:]]*#.*$"
+
+    # Configuration directives
+    - statement: "^[[:space:]]*[A-Za-z0-9_-]+"
+
+    # Hex colors
+    - constant.string: "#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?\\b"
+
+    # Numbers and decimal values
+    - constant.number: "\\b[0-9]+([.][0-9]+)?\\b"
+
+    # Common boolean-like values
+    - constant: "\\b(yes|no|true|false|on|off|none)\\b"
+
+    # Keyboard shortcuts
+    - special: "\\b(ctrl|shift|alt|super)\\+[A-Za-z0-9+_-]+"
+
+    # Environment variables
+    - identifier: "\\$\\{?[A-Za-z_][A-Za-z0-9_]*\\}?"
