@@ -23,6 +23,12 @@ also hardware-validated on 2026-09-07. The exact internal-panel policy is
 specific to this first measured ThinkPad; the second machine still requires
 its own output record before this checkpoint is reused there.
 
+Chapter 23 records the reviewed personalization of Kitty, Mako, Fuzzel, and
+swaylock, plus explicit monitor restoration after a system resume. The complete
+set passed hardware validation on the first ThinkPad on 2026-09-08. After the
+matching documentation commits are created, `post-install-23-v1` becomes the
+new cumulative checkpoint in both the dotfiles and post-install repositories.
+
 ## Scope
 
 This repository will own user-level configuration for components such as:
@@ -122,7 +128,7 @@ They provide:
 - a compact full-width Midnight Circuit status bar with dynamic Niri workspace
   dots, a centered clock, and icon-led status modules;
 - immediate and idle-triggered locking, monitor power control, and pre-suspend
-  lock coordination.
+  lock coordination;
 - battery-only automatic suspend after 30 idle minutes, through a fail-closed
   UPower helper that preserves systemd inhibitors;
 - the first target's finished Niri v1 input, navigation, movement, sizing,
@@ -133,7 +139,18 @@ They provide:
 - a project-owned SVG wallpaper with a solid-colour fallback;
 - dark GTK preferences, Papirus Dark icons, and the Breeze cursor theme;
 - Qt 6 widget fonts, icons, dialogs, Fusion style, and a custom Midnight
-  Circuit palette through qt6ct.
+  Circuit palette through qt6ct;
+- a compact Fuzzel launcher with fzf-style matching, useful desktop-entry
+  fields, a match counter, and overlay placement;
+- Mako notification history, urgency-specific behavior, progress indication,
+  mouse/touch actions, and Fuzzel-backed action selection;
+- a smaller Midnight Circuit swaylock indicator with explicit authentication
+  states;
+- Kitty cursor trails, per-pixel touchpad scrollback, contextual tabs,
+  clipboard/paste safeguards, command-finish notifications, and 94% background
+  opacity;
+- explicit monitor power-on after a system resume, in addition to the existing
+  monitor-off timeout's activity-resume command.
 
 It deliberately does not configure external outputs, Qt 5, Kvantum, a forced
 Qt platform backend, automatic suspend on AC, hibernation, or automatic login.
@@ -174,6 +191,10 @@ recorded in
 [chapter 22](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/22-niri-daily-driver-refinement.md).
 That chapter makes `playerctl` and `python-gobject` explicit runtime
 dependencies and documents why the internal-panel values are host-specific.
+The current multi-component personalization stage is reviewed and tested in
+[chapter 23](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/23-core-desktop-component-refinement.md).
+It introduces no new package dependency and records the completed real-session,
+lock, notification, terminal, and suspend/resume validation.
 
 ## Fresh installations after the desktop is stable
 
