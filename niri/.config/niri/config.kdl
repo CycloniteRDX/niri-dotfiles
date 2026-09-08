@@ -204,6 +204,7 @@ spawn-at-startup "swayidle" "-w" \
     "resume" "niri msg action power-on-monitors" \
     "timeout" "1800" "$HOME/.local/bin/idle-suspend" \
     "before-sleep" "swaylock -f" \
+    "after-resume" "niri msg action power-on-monitors" \
     "lock" "swaylock -f"
 
 
