@@ -1,21 +1,93 @@
+# ============================================================
+# Swaylock
+# ============================================================
+#
+# Design goals:
+# - dark lock screen matching the desktop theme
+# - compact, understated authentication indicator
+# - clear visual feedback without excessive animation/noise
+# - cyan/magenta accents shared with Niri, Waybar, Kitty,
+#   Mako and Fuzzel
+
+
+# ------------------------------------------------------------
+# Background
+# ------------------------------------------------------------
+
 color=0b0f17
+
+
+# ------------------------------------------------------------
+# Typography
+# ------------------------------------------------------------
+
 font=Noto Sans
-font-size=24
-indicator-radius=90
-indicator-thickness=8
+font-size=18
+
+
+# ------------------------------------------------------------
+# Indicator
+# ------------------------------------------------------------
+
+indicator-radius=60
+indicator-thickness=5
+
+
+# ------------------------------------------------------------
+# Indicator interior
+# ------------------------------------------------------------
+
+# Keep the center dark in every state. Status is communicated
+# mainly through the outer ring and text.
 inside-color=121824e6
-inside-clear-color=f3c969cc
-inside-ver-color=5ce1e6cc
-inside-wrong-color=ff6b81cc
+inside-clear-color=121824e6
+inside-ver-color=121824e6
+inside-wrong-color=121824e6
+
+
+# ------------------------------------------------------------
+# Ring
+# ------------------------------------------------------------
+
 ring-color=2a3a50ff
 ring-clear-color=f3c969ff
 ring-ver-color=5ce1e6ff
 ring-wrong-color=ff6b81ff
-key-hl-color=7bd88fff
-bs-hl-color=ff6b81ff
-text-color=dce7f2ff
-text-clear-color=0b0f17ff
-text-ver-color=0b0f17ff
-text-wrong-color=0b0f17ff
+
+
+# ------------------------------------------------------------
+# Internal lines / separators
+# ------------------------------------------------------------
+
+line-color=00000000
+line-clear-color=00000000
+line-ver-color=00000000
+line-wrong-color=00000000
+
 separator-color=00000000
+
+
+# ------------------------------------------------------------
+# Key feedback
+# ------------------------------------------------------------
+
+key-hl-color=5ce1e6ff
+bs-hl-color=f05adfff
+
+
+# ------------------------------------------------------------
+# Text
+# ------------------------------------------------------------
+
+text-color=dce7f2ff
+text-clear-color=f3c969ff
+text-ver-color=5ce1e6ff
+text-wrong-color=ff6b81ff
+
+
+# ------------------------------------------------------------
+# Authentication behavior
+# ------------------------------------------------------------
+
+ignore-empty-password
 show-failed-attempts
