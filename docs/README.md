@@ -76,6 +76,7 @@ chapter:
 | 18 | `post-install-18-v2` | `post-install-18-v1` | Battery-only automatic session suspend after 30 idle minutes, with an executable helper |
 | 21 | `post-install-21-v1` | `b922d85` | Hardware-validated compact full-width Midnight Circuit Waybar with explicit icon-font dependencies |
 | 22 | `post-install-22-v1` | Final documentation commit | Hardware-validated Niri v1 input, layout, bindings, and TLP-aware internal-panel refresh |
+| 23 | `post-install-23-v1` | Final documentation commit | Hardware-validated Kitty, Mako, Fuzzel, swaylock, and system-resume monitor restoration |
 
 The published earlier tags remain immutable historical checkpoints. Chapters
 11, 13, and 15 use `v2` because their original swaylock configuration contained a
@@ -258,6 +259,23 @@ is `python-gobject`; Niri's media keys also make `playerctl` explicit. The
 second ThinkPad must be measured before this target-specific output block is
 reused or moved into a dedicated host package.
 
+Chapter 23 keeps every established owner and refines four
+existing surfaces together because the commits were already made as one
+post-chapter-22 series. Fuzzel gains compact fzf-style application matching;
+Mako gains history, urgency states, progress rendering, and action selection
+through Fuzzel; swaylock gains a smaller state-coloured indicator; and Kitty
+gains cursor trails, safer paste/clipboard behaviour, contextual tabs,
+high-precision scrollback, command-finish notifications, and subtle
+transparency. Niri's swayidle command also powers monitors on after logind
+reports a system resume. This is distinct from the existing `resume` command,
+which runs when user activity returns after the ten-minute monitor-off timeout.
+
+All configured keys match the current documented option sets. PAM unlock,
+notification actions, display restoration, scaling, and rendering behaviour
+passed real-session validation on the first ThinkPad on 2026-09-08. Create
+`post-install-23-v1` at the final documentation commit after the three
+repositories have been reviewed and committed.
+
 ## Deployment lifecycle
 
 All deployment operations run from the repository root:
@@ -344,21 +362,20 @@ outside the active path; they are never overwritten blindly.
 | Icons | Papirus Dark. |
 | Waybar glyph fonts | `Font Awesome 7 Free` from `otf-font-awesome` and `Symbols Nerd Font Mono` from `ttf-nerd-fonts-symbols-mono`. |
 | Cursor | `breeze_cursors`, 24 px, exported by Niri for the Wayland session. |
-| Kitty | Noto Sans Mono with the shared opaque Midnight Circuit palette. |
+| Kitty | Noto Sans Mono with the shared Midnight Circuit palette, 94% background opacity, cursor trails, contextual tabs, and command-finish notifications. |
 | Keyboard and pointing | `us`, right Alt Compose, Caps Lock as Ctrl, and validated touchpad/TrackPoint tuning. |
 
 ## Current personalization order
 
 1. Waybar — complete and hardware-validated.
 2. Niri — moved forward, complete, and hardware-validated on the first target.
-3. Fuzzel — next.
-4. Mako.
-5. swaylock.
-6. swaybg and wallpaper presentation.
-7. Kitty plus GTK and Qt consistency.
-8. tuigreet.
-9. Plymouth.
-10. Cross-component validation and a stable dotfiles release.
+3. Kitty, Mako, Fuzzel, swaylock, and resume monitor restoration — complete and
+   hardware-validated together in chapter 23.
+4. swaybg and wallpaper presentation — next.
+5. GTK and Qt cross-application consistency review.
+6. tuigreet.
+7. Plymouth.
+8. Cross-component validation and a stable dotfiles release.
 
 The first pass keeps every current component. SwayNotificationCenter, another
 wallpaper renderer, Eww, or any other replacement is evaluated only after the
