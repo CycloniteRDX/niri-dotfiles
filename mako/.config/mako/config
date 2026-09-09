@@ -42,7 +42,7 @@ text-alignment=left
 # ------------------------------------------------------------
 
 icons=1
-icon-path=/usr/share/icons/Adwaita
+icon-path=/usr/share/icons/Papirus-Dark:/usr/share/icons/Papirus
 max-icon-size=48
 icon-location=left
 icon-border-radius=6
