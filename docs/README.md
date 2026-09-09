@@ -17,6 +17,15 @@ directory:
 ├── mimeapps/
 │   └── .config/
 │       └── mimeapps.list
+├── bash/
+│   ├── .bash_profile
+│   └── .bashrc
+├── nano/
+│   └── .config/nano/
+├── micro/
+│   └── .config/micro/
+├── vim/
+│   └── .config/vim/vimrc
 └── niri/
     └── .config/
         └── niri/
@@ -40,6 +49,10 @@ only when they contain reviewed files.
 | `wallpapers/` | Reviewed wallpaper assets or documentation. |
 | `swaylock/` | Portable lock-screen appearance; authentication remains PAM-owned. |
 | `kitty/` | Portable terminal behavior and palette without shell state or secrets. |
+| `bash/` | Interactive Bash behavior and prompt; never graphical-session autostart or generated history. |
+| `nano/` | Predictable Nano behavior plus a project-owned KDL syntax definition. |
+| `micro/` | Micro settings, RogueOS palette, and project-owned KDL and Kitty syntax definitions. |
+| `vim/` | Plugin-free Vim learning configuration; undo and swap contents remain generated state. |
 | `theme/` | Portable GTK preferences; packages and GSettings remain system-integration concerns. |
 | `qt6ct/` | Qt 6 Fusion style, fonts, icons, portal dialogs, and Midnight Circuit palette. |
 | `scripts/` | Narrow reviewed helpers deployed below `~/.local/bin`; no service or privilege policy. |
@@ -77,6 +90,7 @@ chapter:
 | 21 | `post-install-21-v1` | `b922d85` | Hardware-validated compact full-width Midnight Circuit Waybar with explicit icon-font dependencies |
 | 22 | `post-install-22-v1` | Final documentation commit | Hardware-validated Niri v1 input, layout, bindings, and TLP-aware internal-panel refresh |
 | 23 | `post-install-23-v1` | Final documentation commit | Hardware-validated Kitty, Mako, Fuzzel, swaylock, and system-resume monitor restoration |
+| 25 | `post-install-25-v1` | Final documentation commit | Hardware-validated Bash, Nano, Micro, and plugin-free Vim terminal workflow |
 
 The published earlier tags remain immutable historical checkpoints. Chapters
 11, 13, and 15 use `v2` because their original swaylock configuration contained a
@@ -273,8 +287,22 @@ which runs when user activity returns after the ten-minute monitor-off timeout.
 All configured keys match the current documented option sets. PAM unlock,
 notification actions, display restoration, scaling, and rendering behaviour
 passed real-session validation on the first ThinkPad on 2026-09-08. Create
-`post-install-23-v1` at the final documentation commit after the three
-repositories have been reviewed and committed.
+`post-install-23-v1` records that reviewed cumulative checkpoint.
+
+Chapter 25 adds four independently deployable packages. Bash keeps the existing
+login shell while adding bounded history, Readline preferences, small aliases,
+Git/exit context, and a prompt that preserves existing `PROMPT_COMMAND` hooks.
+Nano adds predictable editing behavior, Arch's packaged syntax collection, and
+a local KDL definition. Micro adds its RogueOS palette and local KDL and Kitty
+syntax definitions. Vim remains plugin-free while adding learning-oriented
+defaults, separate undo/swap state, and a Wayland clipboard provider.
+
+The four feature commits remain independently reviewable even though the
+chapter checkpoint is cumulative. Bash and JSON syntax checks, Stow link
+ownership, Vim loading and state directories, real KDL rendering in all three
+editors, and the Bash prompt were validated on the first ThinkPad on
+2026-09-08. Create `post-install-25-v1` at the final documentation commit in
+both this repository and `arch-linux-post-install`.
 
 ## Deployment lifecycle
 
@@ -299,6 +327,8 @@ stow --simulate --verbose --no-folding --target="$HOME" qt6ct
 stow --verbose --no-folding --target="$HOME" qt6ct
 stow --simulate --verbose --no-folding --target="$HOME" scripts
 stow --verbose --no-folding --target="$HOME" scripts
+stow --simulate --verbose --no-folding --target="$HOME" bash nano micro vim
+stow --verbose --no-folding --target="$HOME" bash nano micro vim
 test -x "$HOME/.local/bin/idle-suspend"
 test -x "$HOME/.config/niri/scripts/power-profile-refresh.py"
 niri validate
@@ -316,6 +346,7 @@ stow --restow --verbose --no-folding --target="$HOME" kitty
 stow --restow --verbose --no-folding --target="$HOME" theme
 stow --restow --verbose --no-folding --target="$HOME" qt6ct
 stow --restow --verbose --no-folding --target="$HOME" scripts
+stow --restow --verbose --no-folding --target="$HOME" bash nano micro vim
 test -x "$HOME/.config/niri/scripts/power-profile-refresh.py"
 niri validate
 ```
@@ -332,6 +363,7 @@ stow --delete --verbose --target="$HOME" kitty
 stow --delete --verbose --target="$HOME" theme
 stow --delete --verbose --target="$HOME" qt6ct
 stow --delete --verbose --target="$HOME" scripts
+stow --delete --verbose --target="$HOME" bash nano micro vim
 ```
 
 Stow must stop on a conflict. Existing targets are reviewed and backed up
@@ -363,6 +395,10 @@ outside the active path; they are never overwritten blindly.
 | Waybar glyph fonts | `Font Awesome 7 Free` from `otf-font-awesome` and `Symbols Nerd Font Mono` from `ttf-nerd-fonts-symbols-mono`. |
 | Cursor | `breeze_cursors`, 24 px, exported by Niri for the Wayland session. |
 | Kitty | Noto Sans Mono with the shared Midnight Circuit palette, 94% background opacity, cursor trails, contextual tabs, and command-finish notifications. |
+| Bash | Existing login shell with bounded history, Readline search, small aliases, Git and exit context, and the RogueOS prompt. |
+| Nano | Predictable fallback editor with packaged syntax definitions and project KDL highlighting. |
+| Micro | Canonical approachable editor with the RogueOS palette, external Wayland clipboard, and KDL/Kitty syntax. |
+| Vim | Plugin-free learning and recovery editor with isolated state and a Wayland clipboard provider. |
 | Keyboard and pointing | `us`, right Alt Compose, Caps Lock as Ctrl, and validated touchpad/TrackPoint tuning. |
 
 ## Current personalization order
@@ -371,11 +407,13 @@ outside the active path; they are never overwritten blindly.
 2. Niri — moved forward, complete, and hardware-validated on the first target.
 3. Kitty, Mako, Fuzzel, swaylock, and resume monitor restoration — complete and
    hardware-validated together in chapter 23.
-4. swaybg and wallpaper presentation — next.
-5. GTK and Qt cross-application consistency review.
-6. tuigreet.
-7. Plymouth.
-8. Cross-component validation and a stable dotfiles release.
+4. swaybg and static wallpaper presentation — complete without automation.
+5. tuigreet — complete and hardware-validated in post-install chapter 24; no
+   dotfiles package required.
+6. Bash, Nano, Micro, and Vim — complete and hardware-validated in chapter 25.
+7. GTK and Qt cross-application consistency review — next.
+8. Decide whether Plymouth needs additional styling.
+9. Cross-component validation and a stable dotfiles release.
 
 The first pass keeps every current component. SwayNotificationCenter, another
 wallpaper renderer, Eww, or any other replacement is evaluated only after the

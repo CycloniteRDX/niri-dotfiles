@@ -26,8 +26,16 @@ its own output record before this checkpoint is reused there.
 Chapter 23 records the reviewed personalization of Kitty, Mako, Fuzzel, and
 swaylock, plus explicit monitor restoration after a system resume. The complete
 set passed hardware validation on the first ThinkPad on 2026-09-08. After the
-matching documentation commits are created, `post-install-23-v1` becomes the
-new cumulative checkpoint in both the dotfiles and post-install repositories.
+matching documentation commits, `post-install-23-v1` was created as the
+cumulative checkpoint in both the dotfiles and post-install repositories.
+
+Chapter 25 records four subsequent, independently committed packages for Bash,
+Nano, Micro, and Vim. Their syntax, JSON, link, state-directory, clipboard, and
+real-editor behavior passed validation on the first ThinkPad on 2026-09-08.
+After the matching documentation commits, `post-install-25-v1` becomes the
+next cumulative checkpoint in both repositories. Chapter 24 is intentionally a
+post-install-only tag because tuigreet is system configuration outside this
+repository.
 
 ## Scope
 
@@ -106,6 +114,13 @@ wallpapers/.local/share/wallpapers/ATTRIBUTION.md
 wallpapers/.local/share/wallpapers/midnight-circuit.svg
 swaylock/.config/swaylock/config
 kitty/.config/kitty/kitty.conf
+bash/.bash_profile
+bash/.bashrc
+nano/.config/nano/{nanorc,kdl.nanorc}
+micro/.config/micro/settings.json
+micro/.config/micro/colorschemes/rogueos.micro
+micro/.config/micro/syntax/{kdl.yaml,kitty.yaml}
+vim/.config/vim/vimrc
 theme/.config/gtk-3.0/settings.ini
 theme/.config/gtk-4.0/settings.ini
 qt6ct/.config/qt6ct/qt6ct.conf
@@ -151,6 +166,14 @@ They provide:
   opacity;
 - explicit monitor power-on after a system resume, in addition to the existing
   monitor-off timeout's activity-resume command.
+- a compact Bash prompt with Git and failure state, bounded append-only history,
+  prefix history search, completion preferences, and small navigation aliases;
+- predictable Nano editing defaults, Arch's syntax collection, and a local KDL
+  syntax definition for Niri configuration;
+- Micro's RogueOS palette, editor behavior, external Wayland clipboard, and
+  project-owned KDL and Kitty syntax definitions;
+- a plugin-free Vim learning profile with persistent undo, isolated swap state,
+  smart searching, RogueOS colors, and a `wl-clipboard` provider.
 
 It deliberately does not configure external outputs, Qt 5, Kvantum, a forced
 Qt platform backend, automatic suspend on AC, hibernation, or automatic login.
@@ -195,6 +218,11 @@ The current multi-component personalization stage is reviewed and tested in
 [chapter 23](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/23-core-desktop-component-refinement.md).
 It introduces no new package dependency and records the completed real-session,
 lock, notification, terminal, and suspend/resume validation.
+The Bash and terminal-editor packages are deployed and verified in
+[chapter 25](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/25-terminal-shell-and-editor-refinement.md).
+That chapter installs `nano-syntax-highlighting`, makes the existing Bash,
+Nano, Micro, Vim, Git, and `wl-clipboard` dependencies explicit, creates Vim's
+generated state directories, and preserves the user/system ownership boundary.
 
 ## Fresh installations after the desktop is stable
 
@@ -236,6 +264,7 @@ stow --simulate --verbose --no-folding --target="$HOME" kitty
 stow --simulate --verbose --no-folding --target="$HOME" theme
 stow --simulate --verbose --no-folding --target="$HOME" qt6ct
 stow --simulate --verbose --no-folding --target="$HOME" scripts
+stow --simulate --verbose --no-folding --target="$HOME" bash nano micro vim
 ```
 
 If the preview reports no conflict, deploy them:
@@ -250,6 +279,7 @@ stow --verbose --no-folding --target="$HOME" kitty
 stow --verbose --no-folding --target="$HOME" theme
 stow --verbose --no-folding --target="$HOME" qt6ct
 stow --verbose --no-folding --target="$HOME" scripts
+stow --verbose --no-folding --target="$HOME" bash nano micro vim
 test -x "$HOME/.local/bin/idle-suspend"
 test -x "$HOME/.config/niri/scripts/power-profile-refresh.py"
 niri validate
@@ -271,6 +301,7 @@ stow --delete --verbose --target="$HOME" kitty
 stow --delete --verbose --target="$HOME" theme
 stow --delete --verbose --target="$HOME" qt6ct
 stow --delete --verbose --target="$HOME" scripts
+stow --delete --verbose --target="$HOME" bash nano micro vim
 ```
 
 ## Related repositories
