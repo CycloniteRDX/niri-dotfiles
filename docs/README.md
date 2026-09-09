@@ -438,8 +438,10 @@ outside the active path; they are never overwritten blindly.
 8. GTK and Qt cross-application consistency review — complete and
    hardware-validated on 2026-09-09.
 9. Cross-component validation — complete on the first ThinkPad in chapter 27.
-10. Stable dotfiles release — ready for `v1.0.0` after the final documentation
-    commit and matching `post-install-27-v1` checkpoint.
+10. Stable dotfiles release — published as `v1.0.0` with the matching
+    `post-install-27-v1` checkpoint.
+11. Clean-install reconstruction — owned by post-install chapter 28 and based
+    on immutable `v1.0.0`; no new dotfiles tag is required.
 
 The first pass keeps every current component. SwayNotificationCenter, another
 wallpaper renderer, Eww, or any other replacement is evaluated only after the

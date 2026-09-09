@@ -5,13 +5,13 @@ Arch Linux post-install repository.
 
 ## Project status
 
-Hardware-validated first-target stable-release candidate. The repository contains the reviewed Niri desktop,
-removable-media autostart, default-application map, bar, launcher, notification
-daemon, wallpaper location, screen-locker configuration, idle lifecycle, and
-Kitty terminal configuration. It also contains the portable Midnight Circuit
-visual foundation: a project-owned wallpaper, one shared dark palette, GTK
-preferences, Papirus icons, the Breeze cursor theme, and a matching Qt 6
-widget palette through qt6ct and Fusion.
+Hardware-validated first-target stable release. The repository contains the
+reviewed Niri desktop, removable-media autostart, default-application map, bar,
+launcher, notification daemon, wallpaper location, screen-locker
+configuration, idle lifecycle, and Kitty terminal configuration. It also
+contains the portable Midnight Circuit visual foundation: a project-owned
+wallpaper, one shared dark palette, GTK preferences, Papirus icons, the Breeze
+cursor theme, and a matching Qt 6 widget palette through qt6ct and Fusion.
 The underlying baseline passed the complete post-install validation on the
 first target ThinkPad on 2026-09-04, and the Qt 6, automatic-suspend, Plymouth,
 and TPM2 extensions passed their separate hardware validations. Chapter 21's
@@ -45,6 +45,7 @@ now been checked together on the first ThinkPad. The same final validation
 corrected Mako's named-icon lookup to use Papirus Dark plus its Papirus parent,
 and replaced Blueman's permanent XDG autostart with an on-demand Waybar toggle.
 The complete cross-component result passed hardware validation on 2026-09-09.
+The final commit is published as both `post-install-27-v1` and `v1.0.0`.
 
 ## Scope
 
@@ -200,8 +201,10 @@ line before deployment if the repository is reused under another user. greetd
 and tuigreet are system configuration documented outside this user-level
 repository.
 
-Package installation and the complete deployment procedure are documented in
-[chapter 05 of Arch Linux Post-install](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/05-minimal-graphical-bootstrap.md).
+The initial graphical bootstrap is documented in
+[chapter 05 of Arch Linux Post-install](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/05-minimal-graphical-bootstrap.md);
+the concise complete-system reconstruction is
+[chapter 28](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/28-complete-workstation-reconstruction.md).
 The removable-media service is added in
 [chapter 07](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/07-core-workstation-services.md).
 Daily applications and the default-handler map are added in
@@ -261,11 +264,11 @@ deployed. A target-specific tag must also match the measured machine: chapter
 22 is ready for the first ThinkPad, while the second must verify its connector,
 exact timings, and preferred scale before selecting it.
 
-The first fully personalized desktop is now hardware-validated. After the
-chapter 27 documentation commits, publish `v1.0.0` in this repository as the
-ordinary reinstall target and create the matching `post-install-27-v1`
-checkpoint in both repositories. Keep the numbered chapter tags for teaching,
-diagnosis, and historical reproduction.
+The first fully personalized desktop is hardware-validated and published as
+`v1.0.0`. Use that immutable tag as the ordinary reinstall target and retain
+`post-install-27-v1` for chapter-aligned teaching and diagnosis. Companion
+post-install chapter 28 provides the concise complete-system reconstruction
+procedure; it does not require a new dotfiles release.
 
 ## Deploy with GNU Stow
 
