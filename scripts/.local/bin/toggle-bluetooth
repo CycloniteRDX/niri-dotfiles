@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+set -u
+
+notify_error() {
+    if command -v notify-send >/dev/null 2>&1; then
+        notify-send \
+            --urgency=critical \
+            "Bluetooth" \
+            "$1"
+    fi
+}
+
+# If a controller exists and is powered, turn it off.
+if bluetoothctl show 2>/dev/null |
+    grep -q '^[[:space:]]*Powered: yes$'; then
+    if bluetoothctl power off >/dev/null; then
+        exit 0
+    fi
+
+    notify_error "Could not power off the Bluetooth controller."
+    exit 1
+fi
+
+# A powered-off controller may disappear behind an rfkill soft block.
+if ! rfkill unblock bluetooth; then
+    notify_error "Could not unblock the Bluetooth radio."
+    exit 1
+fi
+
+# Wait up to three seconds for the controller and its firmware.
+for attempt in {1..30}; do
+    if bluetoothctl show >/dev/null 2>&1; then
+        if bluetoothctl power on >/dev/null; then
+            exit 0
+        fi
+    fi
+
+    sleep 0.1
+done
+
+notify_error "The Bluetooth controller did not become available."
+exit 1

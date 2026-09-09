@@ -111,7 +111,7 @@
         "tooltip-format": "Bluetooth",
         "tooltip-format-connected": "{device_enumerate}",
 
-        "on-click": "bash -c 'if bluetoothctl show | grep -q \"Powered: yes\"; then bluetoothctl power off; else bluetoothctl power on; fi'",
+        "on-click": "$HOME/.local/bin/toggle-bluetooth",
         "on-click-right": "blueman-manager"
     },
 
