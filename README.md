@@ -32,10 +32,11 @@ cumulative checkpoint in both the dotfiles and post-install repositories.
 Chapter 25 records four subsequent, independently committed packages for Bash,
 Nano, Micro, and Vim. Their syntax, JSON, link, state-directory, clipboard, and
 real-editor behavior passed validation on the first ThinkPad on 2026-09-08.
-After the matching documentation commits, `post-install-25-v1` becomes the
-next cumulative checkpoint in both repositories. Chapter 24 is intentionally a
+After the matching documentation commits, `post-install-25-v1` was created as
+the cumulative checkpoint in both repositories. Chapter 24 is intentionally a
 post-install-only tag because tuigreet is system configuration outside this
-repository.
+repository. Chapter 26 is likewise post-install-only: the validated RogueOS
+Plymouth theme is system-owned and introduces no dotfiles package.
 
 ## Scope
 

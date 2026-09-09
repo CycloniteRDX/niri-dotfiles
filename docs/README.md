@@ -411,8 +411,9 @@ outside the active path; they are never overwritten blindly.
 5. tuigreet — complete and hardware-validated in post-install chapter 24; no
    dotfiles package required.
 6. Bash, Nano, Micro, and Vim — complete and hardware-validated in chapter 25.
-7. GTK and Qt cross-application consistency review — next.
-8. Decide whether Plymouth needs additional styling.
+7. Plymouth — minimal RogueOS theme complete and hardware-validated in
+   post-install chapter 26; no dotfiles package required.
+8. GTK and Qt cross-application consistency review — next.
 9. Cross-component validation and a stable dotfiles release.
 
 The first pass keeps every current component. SwayNotificationCenter, another
