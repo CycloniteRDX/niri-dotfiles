@@ -13,6 +13,7 @@ directory:
 ├── autostart/
 │   └── .config/
 │       └── autostart/
+│           ├── blueman.desktop
 │           └── udiskie.desktop
 ├── mimeapps/
 │   └── .config/
@@ -40,7 +41,7 @@ only when they contain reviewed files.
 | Path | Intended role |
 | --- | --- |
 | `docs/` | Deployment, recovery, component map, and customization notes. |
-| `autostart/` | Portable XDG autostart entries for reviewed session utilities. |
+| `autostart/` | Portable XDG autostart entries and user-scope overrides for reviewed session utilities. |
 | `mimeapps/` | Portable XDG default-application associations. |
 | `niri/` | Niri configuration plus the first target's measured input/output helper, arranged relative to `$HOME` for GNU Stow. |
 | `waybar/` | Niri-aware status bar configuration and CSS. |
@@ -55,7 +56,7 @@ only when they contain reviewed files.
 | `vim/` | Plugin-free Vim learning configuration; undo and swap contents remain generated state. |
 | `theme/` | Portable GTK preferences; packages and GSettings remain system-integration concerns. |
 | `qt6ct/` | Qt 6 Fusion style, fonts, icons, portal dialogs, and Midnight Circuit palette. |
-| `scripts/` | Narrow reviewed helpers deployed below `~/.local/bin`; no service or privilege policy. |
+| `scripts/` | Narrow reviewed idle and Bluetooth helpers deployed below `~/.local/bin`; no service or privilege policy. |
 | Future component package | One independently deployable application or coherent configuration group. |
 | Future `hosts/` | Small, non-secret overrides for hardware-specific differences. |
 | Future `tests/` | Safe syntax and link checks that do not require a running graphical session. |
@@ -91,6 +92,7 @@ chapter:
 | 22 | `post-install-22-v1` | Final documentation commit | Hardware-validated Niri v1 input, layout, bindings, and TLP-aware internal-panel refresh |
 | 23 | `post-install-23-v1` | Final documentation commit | Hardware-validated Kitty, Mako, Fuzzel, swaylock, and system-resume monitor restoration |
 | 25 | `post-install-25-v1` | Final documentation commit | Hardware-validated Bash, Nano, Micro, and plugin-free Vim terminal workflow |
+| 27 | `post-install-27-v1` | Final documentation commit | Hardware-validated GTK/Qt consistency, Papirus Mako icons, on-demand Bluetooth, and complete desktop release state |
 
 The published earlier tags remain immutable historical checkpoints. Chapters
 11, 13, and 15 use `v2` because their original swaylock configuration contained a
@@ -232,6 +234,14 @@ git ls-files --stage scripts/.local/bin/idle-suspend
 The first field of the second command must be `100755` before the corrected
 checkpoint is committed and tagged.
 
+Chapter 27 adds a second executable helper to the same package. The Waybar
+Bluetooth action cannot rely on `bluetoothctl power on` alone when a powered-off
+adapter becomes hidden behind a soft rfkill block. `toggle-bluetooth` unblocks
+only Bluetooth, waits briefly for the controller, then requests BlueZ power.
+The `blueman.desktop` override uses the package filename with `Hidden=true` so
+the system XDG autostart entry is suppressed without editing `/etc`; the
+graphical manager remains available on demand from Waybar.
+
 Chapter 21 starts the advanced personalization series without replacing a
 component. Waybar becomes a compact full-width bar with dynamic Niri workspace
 dots, a fixed-center US-style clock, and separate CPU, memory, temperature,
@@ -303,6 +313,17 @@ ownership, Vim loading and state directories, real KDL rendering in all three
 editors, and the Bash prompt were validated on the first ThinkPad on
 2026-09-08. Create `post-install-25-v1` at the final documentation commit in
 both this repository and `arch-linux-post-install`.
+
+Chapter 27 closes the first complete desktop pass. Real notification tests
+replace Mako's ineffective Adwaita search path with explicit Papirus Dark and
+Papirus roots. The final Bluetooth policy keeps BlueZ available but suppresses
+the package-owned permanent Blueman applet/tray autostart; Waybar calls the
+executable `toggle-bluetooth` helper for rfkill-aware power changes and opens
+Blueman Manager only on demand. GTK/Qt, portals, session owners, lock,
+suspend/resume, logout/login, keyring, audio, network, normal boot and the
+previously validated fallback all pass together on the first ThinkPad on
+2026-09-09. That documentation commit is the intended target for both
+`post-install-27-v1` and the first semantic dotfiles release, `v1.0.0`.
 
 ## Deployment lifecycle
 
@@ -380,7 +401,8 @@ outside the active path; they are never overwritten blindly.
 | Default applications | Portable `mimeapps.list` deployed as an independent Stow package. |
 | Status bar | Compact full-width Waybar with native Niri workspaces, icon-led status modules, and the chapter 21 Midnight Circuit presentation. |
 | Launcher | Fuzzel. |
-| Notifications | Mako. |
+| Notifications | Mako with Papirus Dark and Papirus named-icon lookup. |
+| Bluetooth presentation | Waybar toggle with Blueman Manager on demand; no permanent Blueman applet or tray process. |
 | Wallpaper | swaybg with the project-owned `midnight-circuit.svg` and a dark solid fallback. |
 | Screenshots | Niri's built-in actions. |
 | Screen lock | swaylock with PAM authentication. |
@@ -413,8 +435,11 @@ outside the active path; they are never overwritten blindly.
 6. Bash, Nano, Micro, and Vim — complete and hardware-validated in chapter 25.
 7. Plymouth — minimal RogueOS theme complete and hardware-validated in
    post-install chapter 26; no dotfiles package required.
-8. GTK and Qt cross-application consistency review — next.
-9. Cross-component validation and a stable dotfiles release.
+8. GTK and Qt cross-application consistency review — complete and
+   hardware-validated on 2026-09-09.
+9. Cross-component validation — complete on the first ThinkPad in chapter 27.
+10. Stable dotfiles release — ready for `v1.0.0` after the final documentation
+    commit and matching `post-install-27-v1` checkpoint.
 
 The first pass keeps every current component. SwayNotificationCenter, another
 wallpaper renderer, Eww, or any other replacement is evaluated only after the

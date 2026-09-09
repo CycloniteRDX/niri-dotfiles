@@ -5,7 +5,7 @@ Arch Linux post-install repository.
 
 ## Project status
 
-Validated first-target daily-driver stage. The repository contains the reviewed Niri desktop,
+Hardware-validated first-target stable-release candidate. The repository contains the reviewed Niri desktop,
 removable-media autostart, default-application map, bar, launcher, notification
 daemon, wallpaper location, screen-locker configuration, idle lifecycle, and
 Kitty terminal configuration. It also contains the portable Midnight Circuit
@@ -37,6 +37,14 @@ the cumulative checkpoint in both repositories. Chapter 24 is intentionally a
 post-install-only tag because tuigreet is system configuration outside this
 repository. Chapter 26 is likewise post-install-only: the validated RogueOS
 Plymouth theme is system-owned and introduces no dotfiles package.
+
+Chapter 27 closes the first complete desktop pass. GTK 3, GTK 4/libadwaita,
+Qt 6, portals, icons, fonts, cursor propagation, lock/logout/resume, audio,
+networking, the terminal workflow, and both normal and recovery boot paths have
+now been checked together on the first ThinkPad. The same final validation
+corrected Mako's named-icon lookup to use Papirus Dark plus its Papirus parent,
+and replaced Blueman's permanent XDG autostart with an on-demand Waybar toggle.
+The complete cross-component result passed hardware validation on 2026-09-09.
 
 ## Scope
 
@@ -105,7 +113,7 @@ The current Stow packages own these areas:
 ```text
 niri/.config/niri/config.kdl
 niri/.config/niri/scripts/power-profile-refresh.py
-autostart/.config/autostart/udiskie.desktop
+autostart/.config/autostart/{blueman,udiskie}.desktop
 mimeapps/.config/mimeapps.list
 waybar/.config/waybar/{config.jsonc,style.css}
 fuzzel/.config/fuzzel/fuzzel.ini
@@ -126,7 +134,7 @@ theme/.config/gtk-3.0/settings.ini
 theme/.config/gtk-4.0/settings.ini
 qt6ct/.config/qt6ct/qt6ct.conf
 qt6ct/.config/qt6ct/colors/midnight-circuit.conf
-scripts/.local/bin/idle-suspend
+scripts/.local/bin/{idle-suspend,toggle-bluetooth}
 ```
 
 They provide:
@@ -139,6 +147,8 @@ They provide:
 - Waybar, Mako, and swaybg session startup;
 - automatic removable-media mounting through udiskie, without notifications or
   a tray icon of its own;
+- suppression of Blueman's package-owned permanent applet autostart while
+  retaining on-demand access to `blueman-manager`;
 - default handlers for web links, directories, documents, images, text, media,
   archives, calendar files, and office files;
 - a compact full-width Midnight Circuit status bar with dynamic Niri workspace
@@ -159,14 +169,15 @@ They provide:
 - a compact Fuzzel launcher with fzf-style matching, useful desktop-entry
   fields, a match counter, and overlay placement;
 - Mako notification history, urgency-specific behavior, progress indication,
-  mouse/touch actions, and Fuzzel-backed action selection;
+  mouse/touch actions, Fuzzel-backed action selection, and Papirus-based named
+  icon lookup;
 - a smaller Midnight Circuit swaylock indicator with explicit authentication
   states;
 - Kitty cursor trails, per-pixel touchpad scrollback, contextual tabs,
   clipboard/paste safeguards, command-finish notifications, and 94% background
   opacity;
 - explicit monitor power-on after a system resume, in addition to the existing
-  monitor-off timeout's activity-resume command.
+  monitor-off timeout's activity-resume command;
 - a compact Bash prompt with Git and failure state, bounded append-only history,
   prefix history search, completion preferences, and small navigation aliases;
 - predictable Nano editing defaults, Arch's syntax collection, and a local KDL
@@ -174,7 +185,9 @@ They provide:
 - Micro's RogueOS palette, editor behavior, external Wayland clipboard, and
   project-owned KDL and Kitty syntax definitions;
 - a plugin-free Vim learning profile with persistent undo, isolated swap state,
-  smart searching, RogueOS colors, and a `wl-clipboard` provider.
+  smart searching, RogueOS colors, and a `wl-clipboard` provider;
+- a Bluetooth toggle that distinguishes BlueZ power from rfkill state, waits
+  for the controller after unblocking it, and reports failure through Mako.
 
 It deliberately does not configure external outputs, Qt 5, Kvantum, a forced
 Qt platform backend, automatic suspend on AC, hibernation, or automatic login.
@@ -224,6 +237,8 @@ The Bash and terminal-editor packages are deployed and verified in
 That chapter installs `nano-syntax-highlighting`, makes the existing Bash,
 Nano, Micro, Vim, Git, and `wl-clipboard` dependencies explicit, creates Vim's
 generated state directories, and preserves the user/system ownership boundary.
+The final GTK/Qt consistency and cross-component verification is recorded in
+[chapter 27](https://github.com/CycloniteRDX/arch-linux-post-install/blob/main/docs/27-global-desktop-validation.md).
 
 ## Fresh installations after the desktop is stable
 
@@ -246,10 +261,11 @@ deployed. A target-specific tag must also match the measured machine: chapter
 22 is ready for the first ThinkPad, while the second must verify its connector,
 exact timings, and preferred scale before selecting it.
 
-When the first fully personalized desktop is declared stable, publish a
-semantic dotfiles release tag as the ordinary reinstall target and record the
-matching post-install release beside it. Keep the numbered chapter tags for
-teaching, diagnosis, and historical reproduction.
+The first fully personalized desktop is now hardware-validated. After the
+chapter 27 documentation commits, publish `v1.0.0` in this repository as the
+ordinary reinstall target and create the matching `post-install-27-v1`
+checkpoint in both repositories. Keep the numbered chapter tags for teaching,
+diagnosis, and historical reproduction.
 
 ## Deploy with GNU Stow
 
@@ -282,6 +298,7 @@ stow --verbose --no-folding --target="$HOME" qt6ct
 stow --verbose --no-folding --target="$HOME" scripts
 stow --verbose --no-folding --target="$HOME" bash nano micro vim
 test -x "$HOME/.local/bin/idle-suspend"
+test -x "$HOME/.local/bin/toggle-bluetooth"
 test -x "$HOME/.config/niri/scripts/power-profile-refresh.py"
 niri validate
 ```
